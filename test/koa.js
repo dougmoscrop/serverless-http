@@ -40,6 +40,25 @@ it('basic middleware should set statusCode and default body', () => {
   });
 });
 
+it('basic middleware should receive queryString', () => {
+  app.use(function* (next) {
+    this.body = this.query.x;
+    yield* next;
+  });
+
+  return perform({
+    httpMethod: 'GET',
+    path: '/',
+    queryStringParameters: {
+      x: 'y'
+    }
+  })
+  .then(response => {
+    expect(response.body).to.equal('y');
+  });
+});
+
+
 it('basic middleware should set statusCode and custom body', () => {
   app.use(function* (next) {
     this.status = 201;
@@ -194,4 +213,5 @@ describe('koa-route', () => {
       });
     });
   });
+
 });

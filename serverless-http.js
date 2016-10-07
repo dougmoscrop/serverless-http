@@ -2,6 +2,7 @@
 
 const events = require('events');
 const httpMocks = require('node-mocks-http');
+const queryString = require('query-string');
 
 function getHandler(app) {
   if (typeof app.callback === 'function') {
@@ -20,9 +21,12 @@ module.exports = function(app) {
   return (event, context, callback) => {
     const req = httpMocks.createRequest({
       path: event.path,
+      url: `${event.path}?${queryString.stringify(event.queryStringParameters)}`,
+      query: event.queryStringParameters,
       method: event.httpMethod,
       headers: event.headers,
-      socket: { encrypted: true }
+      socket: { encrypted: true },
+      body: event.body
     });
     const res = httpMocks.createResponse({
       eventEmitter: events.EventEmitter
@@ -38,7 +42,7 @@ module.exports = function(app) {
 
     handler(req, res);
     req.emit('open')
-    req.emit('data', event.body);
+    req.emit('data', req.body);
     req.emit('end');
     req.emit('close');
   };
