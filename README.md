@@ -23,6 +23,12 @@ app.use(/* ... */);
 module.exports.handler = serverless(app);
 ```
 
+## Limitations
+
+Your code is still running in Lambda and API Gateway. This means you are still subject to the file size restrictions, for example. You also cannot rely on your server being 'up' in the sense that you should not use in-memory sessions, web sockets, etc.
+
+>Think of this as a familiar way of expressing your API, *not* trying to make Lambda do something it cannot.
+
 ## Contributing
 
-Pull requests are welcome! Especially test scenarios for different situations (e.g. multipart, static file serving)
+Pull requests are welcome! Especially test scenarios for different situations (e.g. multipart)

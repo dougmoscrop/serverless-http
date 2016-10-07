@@ -1,2 +1,5 @@
 env:
   mocha: true
+
+rules:
+  require-yield: 0
