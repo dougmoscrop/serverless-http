@@ -3,6 +3,7 @@
 const koa = require('koa'),
   route = require('koa-route'),
   bodyparser = require('koa-bodyparser'),
+  serve = require('koa-serve'),
   expect = require('chai').expect,
   serverless = require('../serverless-http');
 
@@ -214,4 +215,20 @@ describe('koa-route', () => {
     });
   });
 
+  describe('koa-serve', () => {
+
+    beforeEach(() => {
+      app.use(serve('test'));
+    });
+
+    it('should parse json', () => {
+      return perform({
+        httpMethod: 'GET',
+        path: '/test/file.txt'
+      })
+      .then((response) => {
+        expect(response.body).to.equal('this is a test\n');
+      });
+    });
+  })
 });

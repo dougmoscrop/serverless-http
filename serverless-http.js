@@ -28,11 +28,13 @@ module.exports = function(app) {
       socket: { encrypted: true },
       body: event.body
     });
+
     const res = httpMocks.createResponse({
       eventEmitter: events.EventEmitter
     });
 
-    res.on('end', function() {
+    res.finished = false;
+    res.once('end', function() {
       callback(null, {
         statusCode: res._getStatusCode(),
         headers: res._getHeaders(),
