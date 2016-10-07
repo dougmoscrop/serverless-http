@@ -1,6 +1,6 @@
 # serverless-http
 
-https://travis-ci.org/dougmoscrop/serverless-http.svg?branch=master
+[![Build Status](https://travis-ci.org/dougmoscrop/serverless-http.svg?branch=master)](https://travis-ci.org/dougmoscrop/serverless-http)
 
 ## Description
 
