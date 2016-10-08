@@ -25,8 +25,11 @@ module.exports = function(app) {
       query: event.queryStringParameters,
       method: event.httpMethod,
       headers: event.headers,
+      body: event.body,
+      // these are various stubs required to get frameworks working
       socket: { encrypted: true },
-      body: event.body
+      _readableState: {},
+      resume: Function.prototype
     });
 
     const res = httpMocks.createResponse({
