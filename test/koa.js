@@ -4,6 +4,7 @@ const koa = require('koa'),
   route = require('koa-route'),
   bodyparser = require('koa-bodyparser'),
   serve = require('koa-serve'),
+  Router = require('koa-router'),
   expect = require('chai').expect,
   serverless = require('../serverless-http');
 
@@ -181,6 +182,51 @@ describe('koa', () => {
       .then(response => {
         expect(response.statusCode).to.equal(201);
         expect(response.body).to.equal('Thanks')
+      });
+    });
+
+    it('should allow 404s', () => {
+      return perform({
+        httpMethod: 'POST',
+        path: '/missing'
+      })
+      .then(response => {
+        expect(response.statusCode).to.equal(404);
+      });
+    });
+
+    describe('koa-router', function() {
+
+      beforeEach(() => {
+        const router = new Router();
+
+        router.get('/', function* () {
+          this.body = yield Promise.resolve('hello');
+        });
+
+        app.use(router.routes());
+        app.use(router.allowedMethods());
+      });
+
+      it('should get when it matches', function() {
+        return perform({
+          httpMethod: 'GET',
+          path: '/'
+        })
+        .then((response) => {
+          expect(response.statusCode).to.equal(200);
+          expect(response.body).to.equal('hello');
+        });
+      });
+
+      it('should 404 when route does not match', function() {
+        return perform({
+          httpMethod: 'GET',
+          path: '/missing'
+        })
+        .then((response) => {
+          expect(response.statusCode).to.equal(404);
+        });
       });
     });
 
