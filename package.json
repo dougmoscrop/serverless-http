@@ -1,6 +1,6 @@
 {
   "name": "serverless-http",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Use koa or express/connect in AWS Lambda via API Gateway",
   "main": "serverless-http.js",
   "engines": {
