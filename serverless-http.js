@@ -32,6 +32,10 @@ module.exports = function(app) {
       resume: Function.prototype
     });
 
+    if (!req.headers['content-length'] && req.body.length) {
+      req.headers['content-length'] = req.body.length;
+    }
+
     const res = httpMocks.createResponse({
       eventEmitter: events.EventEmitter
     });
