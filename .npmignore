@@ -1,7 +1,8 @@
 test/
 coverage/
-.travis.yml
 .editorconfig
 .eslintignore
 .eslintrc
 .gitignore
+.npmignore
+.travis.yml
