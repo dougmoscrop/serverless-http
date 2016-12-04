@@ -1,8 +1,47 @@
 'use strict';
 
-const events = require('events');
+const stream = require('stream');
+
 const httpMocks = require('node-mocks-http');
 const queryString = require('query-string');
+const onFinished = require('on-finished');
+
+module.exports = function(app) {
+  const handler = getHandler(app);
+
+  return (event, context, callback) => {
+    try {
+      cleanupEvent(event);
+
+      const req = createRequest(event);
+      const res = createResponse();
+
+      onFinished(req, function(err) {
+        if (err) {
+          callback(err);
+          return;
+        }
+
+        onFinished(res, function(err) {
+          if (err) {
+            callback(err);
+            return;
+          }
+
+          callback(null, {
+            statusCode: res._getStatusCode(),
+            headers: res._getHeaders(),
+            body: res._getData()
+          });
+        });
+
+        handler(req, res)
+      });
+    } catch (e) {
+      callback(e);
+    }
+  };
+};
 
 function getHandler(app) {
   if (typeof app.callback === 'function') {
@@ -16,43 +55,48 @@ function getHandler(app) {
   throw new Error('serverless-http only supports koa and express/connect');
 }
 
-module.exports = function(app) {
-  const handler = getHandler(app);
-  return (event, context, callback) => {
-    const req = httpMocks.createRequest({
-      path: event.path,
-      url: `${event.path}?${queryString.stringify(event.queryStringParameters)}`,
-      query: event.queryStringParameters,
-      method: event.httpMethod,
-      headers: event.headers,
-      body: event.body,
-      // these are various stubs required to get frameworks working
-      socket: { encrypted: true },
-      _readableState: {},
-      resume: Function.prototype
-    });
+function cleanupEvent(event) {
+  event.body = event.body || '';
 
-    if (!req.headers['content-length'] && req.body.length) {
-      req.headers['content-length'] = req.body.length;
-    }
+  // this only really applies during some tests and invoking a lambda directly
+  if (typeof event.body === 'object' && !Buffer.isBuffer(event.body)) {
+    event.body = JSON.stringify(event.body);
+  }
 
-    const res = httpMocks.createResponse({
-      eventEmitter: events.EventEmitter
-    });
+  event.headers = event.headers || {};
 
-    res.finished = false;
-    res.once('end', function() {
-      callback(null, {
-        statusCode: res._getStatusCode(),
-        headers: res._getHeaders(),
-        body: res._getData()
-      });
-    });
+  if (typeof event.headers['content-length'] == 'undefined') {
+    event.headers['content-length'] = event.body.length;
+  }
+}
 
-    handler(req, res);
-    req.emit('open')
-    req.emit('data', req.body);
-    req.emit('end');
-    req.emit('close');
-  };
-};
+function createRequest(event) {
+  const req = httpMocks.createRequest({
+    eventEmitter: stream.Readable,
+    path: event.path,
+    url: `${event.path}?${queryString.stringify(event.queryStringParameters)}`,
+    query: event.queryStringParameters,
+    method: event.httpMethod,
+    headers: event.headers,
+    body: event.body,
+    // this is required to be faked
+    socket: { encrypted: true, readable: false },
+    complete: true
+  });
+  req.push(event.body);
+  req.push(null);
+
+  return req;
+}
+
+function createResponse() {
+  const res = httpMocks.createResponse({
+    eventEmitter: stream.Writable,
+  });
+  res.finished = false;
+  res.once('end', function() {
+    res.finished = true;
+  });
+
+  return res;
+}

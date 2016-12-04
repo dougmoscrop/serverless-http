@@ -6,6 +6,7 @@ const koa = require('koa'),
   serve = require('koa-serve'),
   Router = require('koa-router'),
   expect = require('chai').expect,
+  zlib = require('zlib'),
   serverless = require('../serverless-http');
 
 describe('koa', () => {
@@ -117,9 +118,7 @@ describe('koa', () => {
     })
     .then(response => {
       expect(response.statusCode).to.equal(204);
-      expect(headers).to.deep.equal({
-        'x-request-id': 'abc'
-      });
+      expect(headers['x-request-id']).to.equal('abc');
     });
   });
 
@@ -260,6 +259,38 @@ describe('koa', () => {
           });
         });
       });
+
+      it('works with gzip', () => {
+        let actual;
+        app.use(function*() {
+          this.status = 204;
+          this.body = {};
+          actual = this.request.body;
+        });
+
+        return new Promise((resolve) => {
+          zlib.gzip(`{"foo":"bar"}`, function (_, result) {
+            resolve(result);
+          });
+        })
+        .then((zipped) => {
+          return perform({
+            httpMethod: 'GET',
+            path: '/',
+            headers: {
+              'Content-Type': 'application/json',
+              'Content-Encoding': 'gzip',
+              'Content-Length': zipped.length,
+            },
+            body: zipped
+          })
+          .then(() => {
+            expect(actual).to.deep.equal({
+              foo: "bar"
+            });
+          });
+        });
+      });
     });
 
     describe('koa-serve', () => {
@@ -268,7 +299,7 @@ describe('koa', () => {
         app.use(serve('test'));
       });
 
-      it('should parse json', () => {
+      it('should serve a text file', () => {
         return perform({
           httpMethod: 'GET',
           path: '/test/file.txt'
