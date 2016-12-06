@@ -47,7 +47,7 @@
     "mocha": "^3.1.2"
   },
   "dependencies": {
-    "node-mocks-http": "github:dougmoscrop/node-mocks-http#4801dc06362a36a4d9fa27939aed4e6ff3bc437a",
+    "node-mocks-http": "github:dougmoscrop/node-mocks-http",
     "on-finished": "2.3.0",
     "query-string": "4.2.3"
   }
