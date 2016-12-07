@@ -68,6 +68,9 @@ function cleanupEvent(event) {
   if (typeof event.headers['content-length'] == 'undefined') {
     event.headers['content-length'] = event.body.length;
   }
+
+  event.requestContext = event.requestContext || {};
+  event.requestContext.identity = event.requestContext.identity || {};
 }
 
 function createRequest(event) {
@@ -81,6 +84,7 @@ function createRequest(event) {
     body: event.body,
     // this is required to be faked
     socket: { encrypted: true, readable: false },
+    connection: { sourceIp: event.requestContext.identity.sourceIp },
     complete: true
   });
   req.push(event.body);

@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express'),
+  morgan = require('morgan'),
   expect = require('chai').expect,
   serverless = require('../serverless-http');
 
@@ -100,6 +101,21 @@ describe('express', () => {
     .then(response => {
       expect(response.statusCode).to.equal(200);
       expect(response.body).to.equal('this is a test\n');
+    });
+  });
+
+  it('works with morgan', () => {
+    app.use(morgan('combined'));
+    app.use((req, res) => {
+      res.send(200);
+    });
+
+    return perform({
+      httpMethod: 'GET',
+      path: '/',
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(200);
     });
   });
 });
