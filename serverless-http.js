@@ -84,6 +84,8 @@ function createRequest(event) {
     body: event.body,
     // this is required to be faked
     socket: { encrypted: true, readable: false },
+    httpVersionMajor: '1',
+    httpVersionMinor: '1',
     connection: { sourceIp: event.requestContext.identity.sourceIp },
     complete: true
   });
