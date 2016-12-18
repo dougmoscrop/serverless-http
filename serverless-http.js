@@ -52,7 +52,11 @@ function getHandler(app) {
     return app.handle.bind(app);
   }
 
-  throw new Error('serverless-http only supports koa and express/connect');
+  if (typeof app === 'function') {
+    return app;
+  }
+
+  throw new Error('serverless-http only supports koa, express/connect or a generic http listener');
 }
 
 function cleanupEvent(event) {
