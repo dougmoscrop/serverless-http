@@ -1,3 +1,5 @@
+'use strict';
+
 const serverless = require('../serverless-http'),
   expect = require('chai').expect;
 
