@@ -6,11 +6,19 @@ const httpMocks = require('node-mocks-http');
 const queryString = require('query-string');
 const onFinished = require('on-finished');
 
+const defaultEvent = {
+  body: '',
+  method: 'GET',
+  path: '/'
+};
+
 module.exports = function(app) {
   const handler = getHandler(app);
 
-  return (event, context, callback) => {
+  return (evt, context, callback) => {
     try {
+      const event = evt || defaultEvent;
+
       cleanupEvent(event);
 
       const req = createRequest(event);

@@ -10,7 +10,7 @@ Before using this module, you should already understand API Gateway and AWS Lamb
 
 ## Usage
 
-You can use `express` (or `connect`) instead of `koa` - it's all the same:
+You can use `express` (or `connect` or any `req, res` type middleware) instead of `koa` - it's all the same:
 
 ```javascript
 const serverless = require('serverless-http');
@@ -27,7 +27,7 @@ module.exports.handler = serverless(app);
 
 ## Limitations
 
-Your code is still running in Lambda and API Gateway. This means you are still subject to the file size restrictions, for example. You also cannot rely on your server being 'up' in the sense that you should not use in-memory sessions, web sockets, etc.
+Your code is still running in Lambda and API Gateway. This means you are still subject to the file size restrictions, for example. You also cannot rely on your server being 'up' in the sense that you can/should not use in-memory sessions, web sockets, etc.
 
 >Think of this as a familiar way of expressing your API, *not* trying to make Lambda do something it cannot.
 
