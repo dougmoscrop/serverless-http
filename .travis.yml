@@ -1,14 +1,18 @@
 language: node_js
-
 node_js:
-  - '4'
-  - '5'
-  - '6'
-
+- '4'
+- '5'
+- '6'
 sudo: false
-
 install:
-  - travis_retry npm install
-
+- travis_retry npm install
 script:
-  - npm test
+- npm test
+deploy:
+  provider: npm
+  email: doug.moscrop@gmail.com
+  api_key:
+    secure: Y2aIAVs+5C0tL3xvQ8L3VE1JT2goIp3w6walaX0jmdhU+h3/k58Qw85bCcm9LXOM/llAbaI+oaP94b8VmxWX2kIFXHj4Fy1SO/w3RfbdwS8zzZlsUWVPLoUvExpyj89xS7+DMaah7atCOKMgfZ0G5vd3UjK21rIKcB11D94eDx736de8FIM/xe8CvcM/L3NPLXiNk21kFBpf/PZd8UnFIkMzcRGCW8z7WTK5yhQRAMXqb8FqXGXk3EB647ukHDcemkY28W5eGEGJPTH1cPRLmlgtgfYoewAf2bBFZcLRm9WeAWMS+/obOphR6QruBFTVlZDCr8ZiqjP0hG26U+GECKer/NwR4a5cjkH/U0SIc/vEhriOjnuLmIb78Nm1jsofFJpARU9ZDR9huZWjm7USVzNV2pJ3VWgiVMd+sF7JttV/OQAJLF+iScZf43MgeX1dkWZDgM2OmyRqDFKXVQ2eyF14Yy8Yc1MsgQil7g98hOaoYVkPWx0dNAbe+H22h+tKz3s0s+XUbmcm5uGLBj7vOlLyZgwNtQtVXMUqdmemJWdDJlKl4jBMDcfJ3gcSPwZ57/vOVutrAjlpng05CGfL33puouV0/FnNoxaW/94MYwZehpp6J/ib15ew9djwQtkqxWzpBYTkt3MGfoADL8y8hnSBLt+KC9hEYJhSrSQreno=
+  on:
+    tags: true
+    repo: dougmoscrop/serverless-http

@@ -1,6 +1,6 @@
 {
   "name": "serverless-http",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Use koa or express/connect in AWS Lambda via API Gateway",
   "main": "serverless-http.js",
   "engines": {
@@ -39,6 +39,7 @@
   "homepage": "https://github.com/dougmoscrop/serverless-http",
   "license": "MIT",
   "devDependencies": {
+    "body-parser": "^1.15.2",
     "chai": "^3.5.0",
     "eslint": "^3.9.1",
     "eslint-plugin-mocha": "^4.7.0",
@@ -50,11 +51,12 @@
     "koa-router": "^5.4.0",
     "koa-serve": "^0.1.7",
     "mocha": "^3.1.2",
-    "morgan": "^1.7.0"
+    "morgan": "^1.7.0",
+    "on-headers": "^1.0.1",
+    "publish": "^0.6.0",
+    "sinon": "^1.17.7"
   },
   "dependencies": {
-    "node-mocks-http": "1.5.5",
-    "on-finished": "2.3.0",
-    "query-string": "4.2.3"
+    "on-finished": "2.3.0"
   }
 }

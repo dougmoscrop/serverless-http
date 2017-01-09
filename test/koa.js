@@ -94,9 +94,9 @@ describe('koa', () => {
     .then(response => {
       expect(response.statusCode).to.equal(200);
       expect(response.headers).to.deep.equal({
-        'Content-Length': '14',
-        'Content-Type': 'application/json; charset=utf-8',
-        'X-Test-Header': 'foo'
+        'content-length': '14',
+        'content-type': 'application/json; charset=utf-8',
+        'x-test-header': 'foo'
       });
     });
   });
@@ -193,121 +193,121 @@ describe('koa', () => {
         expect(response.statusCode).to.equal(404);
       });
     });
+  });
 
-    describe('koa-router', function() {
+  describe('koa-router', function() {
 
-      beforeEach(() => {
-        const router = new Router();
+    beforeEach(() => {
+      const router = new Router();
 
-        router.get('/', function* () {
-          this.body = yield Promise.resolve('hello');
-        });
-
-        app.use(router.routes());
-        app.use(router.allowedMethods());
+      router.get('/', function* () {
+        this.body = yield Promise.resolve('hello');
       });
 
-      it('should get when it matches', function() {
-        return perform({
-          httpMethod: 'GET',
-          path: '/'
-        })
-        .then((response) => {
-          expect(response.statusCode).to.equal(200);
-          expect(response.body).to.equal('hello');
-        });
-      });
+      app.use(router.routes());
+      app.use(router.allowedMethods());
+    });
 
-      it('should 404 when route does not match', function() {
-        return perform({
-          httpMethod: 'GET',
-          path: '/missing'
-        })
-        .then((response) => {
-          expect(response.statusCode).to.equal(404);
+    it('should get when it matches', function() {
+      return perform({
+        httpMethod: 'GET',
+        path: '/'
+      })
+      .then((response) => {
+        expect(response.statusCode).to.equal(200);
+        expect(response.body).to.equal('hello');
+      });
+    });
+
+    it('should 404 when route does not match', function() {
+      return perform({
+        httpMethod: 'GET',
+        path: '/missing'
+      })
+      .then((response) => {
+        expect(response.statusCode).to.equal(404);
+      });
+    });
+  });
+
+  describe('koa-bodyparser', () => {
+
+    beforeEach(() => {
+      app.use(bodyparser());
+    });
+
+    it('should parse json', () => {
+      const body = `{"foo":"bar"}`;
+
+      let actual;
+      app.use(function*() {
+        this.status = 204;
+        this.body = {};
+        actual = this.request.body;
+      });
+      return perform({
+        httpMethod: 'GET',
+        path: '/',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': body.length
+        },
+        body
+      })
+      .then(() => {
+        expect(actual).to.deep.equal({
+          "foo": "bar"
         });
       });
     });
 
-    describe('koa-bodyparser', () => {
-
-      beforeEach(() => {
-        app.use(bodyparser());
+    it('works with gzip', () => {
+      let actual;
+      app.use(function*() {
+        this.status = 204;
+        this.body = {};
+        actual = this.request.body;
       });
 
-      it('should parse json', () => {
-        const body = `{"foo":"bar"}`;
-
-        let actual;
-        app.use(function*() {
-          this.status = 204;
-          this.body = {};
-          actual = this.request.body;
+      return new Promise((resolve) => {
+        zlib.gzip(`{"foo":"bar"}`, function (_, result) {
+          resolve(result);
         });
+      })
+      .then((zipped) => {
         return perform({
           httpMethod: 'GET',
           path: '/',
           headers: {
             'Content-Type': 'application/json',
-            'Content-Length': body.length
+            'Content-Encoding': 'gzip',
+            'Content-Length': zipped.length,
           },
-          body
+          body: zipped
         })
         .then(() => {
           expect(actual).to.deep.equal({
-            "foo": "bar"
-          });
-        });
-      });
-
-      it('works with gzip', () => {
-        let actual;
-        app.use(function*() {
-          this.status = 204;
-          this.body = {};
-          actual = this.request.body;
-        });
-
-        return new Promise((resolve) => {
-          zlib.gzip(`{"foo":"bar"}`, function (_, result) {
-            resolve(result);
-          });
-        })
-        .then((zipped) => {
-          return perform({
-            httpMethod: 'GET',
-            path: '/',
-            headers: {
-              'Content-Type': 'application/json',
-              'Content-Encoding': 'gzip',
-              'Content-Length': zipped.length,
-            },
-            body: zipped
-          })
-          .then(() => {
-            expect(actual).to.deep.equal({
-              foo: "bar"
-            });
+            foo: "bar"
           });
         });
       });
     });
-
-    describe('koa-serve', () => {
-
-      beforeEach(() => {
-        app.use(serve('test'));
-      });
-
-      it('should serve a text file', () => {
-        return perform({
-          httpMethod: 'GET',
-          path: '/test/file.txt'
-        })
-        .then((response) => {
-          expect(response.body).to.equal('this is a test\n');
-        });
-      });
-    })
   });
+
+  describe('koa-serve', () => {
+
+    beforeEach(() => {
+      app.use(serve('test'));
+    });
+
+    it('should serve a text file', () => {
+      return perform({
+        httpMethod: 'GET',
+        path: '/test/file.txt'
+      })
+      .then((response) => {
+        expect(response.body).to.equal('this is a test\n');
+      });
+    });
+  })
 });

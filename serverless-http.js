@@ -1,28 +1,19 @@
 'use strict';
 
-const stream = require('stream');
-
-const httpMocks = require('node-mocks-http');
-const queryString = require('query-string');
 const onFinished = require('on-finished');
 
-const defaultEvent = {
-  body: '',
-  method: 'GET',
-  path: '/'
-};
+const Request = require('./request');
+const Response = require('./response');
 
 module.exports = function(app) {
   const handler = getHandler(app);
 
-  return (evt, context, callback) => {
+  return (evt, ctx, callback) => {
     try {
-      const event = evt || defaultEvent;
+      const event = cleanupEvent(evt);
 
-      cleanupEvent(event);
-
-      const req = createRequest(event);
-      const res = createResponse();
+      const req = new Request(event);
+      const res = new Response(req);
 
       onFinished(req, function(err) {
         if (err) {
@@ -37,9 +28,9 @@ module.exports = function(app) {
           }
 
           callback(null, {
-            statusCode: res._getStatusCode(),
-            headers: res._getHeaders(),
-            body: res._getData()
+            statusCode: res.statusCode,
+            headers: res._headers,
+            body: res._body
           });
         });
 
@@ -67,54 +58,29 @@ function getHandler(app) {
   throw new Error('serverless-http only supports koa, express/connect or a generic http listener');
 }
 
-function cleanupEvent(event) {
+function cleanupEvent(evt) {
+  const event = evt || {};
+
+  event.httpMethod = event.httpMethod || 'GET';
+  event.path = event.path || '/';
   event.body = event.body || '';
+  event.headers = event.headers || {};
+  event.requestContext = event.requestContext || {};
+  event.requestContext.identity = event.requestContext.identity || {};
+
+  event.headers = Object.keys(event.headers).reduce((headers, key) => {
+    headers[key.toLowerCase()] = event.headers[key];
+    return headers;
+  }, {});
 
   // this only really applies during some tests and invoking a lambda directly
   if (typeof event.body === 'object' && !Buffer.isBuffer(event.body)) {
     event.body = JSON.stringify(event.body);
   }
 
-  event.headers = event.headers || {};
-
   if (typeof event.headers['content-length'] == 'undefined') {
     event.headers['content-length'] = event.body.length;
   }
 
-  event.requestContext = event.requestContext || {};
-  event.requestContext.identity = event.requestContext.identity || {};
-}
-
-function createRequest(event) {
-  const req = httpMocks.createRequest({
-    eventEmitter: stream.Readable,
-    path: event.path,
-    url: `${event.path}?${queryString.stringify(event.queryStringParameters)}`,
-    query: event.queryStringParameters,
-    method: event.httpMethod,
-    headers: event.headers,
-    body: event.body,
-    // this is required to be faked
-    socket: { encrypted: true, readable: false },
-    httpVersionMajor: '1',
-    httpVersionMinor: '1',
-    connection: { sourceIp: event.requestContext.identity.sourceIp },
-    complete: true
-  });
-  req.push(event.body);
-  req.push(null);
-
-  return req;
-}
-
-function createResponse() {
-  const res = httpMocks.createResponse({
-    eventEmitter: stream.Writable,
-  });
-  res.finished = false;
-  res.once('end', function() {
-    res.finished = true;
-  });
-
-  return res;
+  return event;
 }

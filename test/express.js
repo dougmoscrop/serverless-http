@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express'),
+  bodyParser = require('body-parser'),
   morgan = require('morgan'),
   expect = require('chai').expect,
   serverless = require('../serverless-http');
@@ -39,7 +40,8 @@ describe('express', () => {
     });
   });
 
-  it('basic middleware should get / set body', () => {
+  it('basic middleware should get text body', () => {
+    app.use(bodyParser.text());
     app.use(function (req, res) {
       res.status(200).send(req.body);
     });
@@ -47,11 +49,37 @@ describe('express', () => {
     return perform({
       httpMethod: 'GET',
       path: '/',
-      body: 'hello, world'
+      body: 'hello, world',
+      headers: {
+        'Content-Type': 'text/plain',
+        'Content-Length': '12'
+      }
     })
     .then(response => {
       expect(response.statusCode).to.equal(200);
       expect(response.body).to.equal('hello, world')
+    });
+  });
+
+  it('basic middleware should get json body', () => {
+    app.use(bodyParser.json());
+    app.use(function (req, res) {
+      res.status(200).send(req.body.hello);
+    });
+
+    return perform({
+      httpMethod: 'GET',
+      path: '/',
+      body: {
+        hello: 'world'
+      },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(200);
+      expect(response.body).to.equal('world');
     });
   });
 
@@ -104,18 +132,51 @@ describe('express', () => {
     });
   });
 
-  it('works with morgan', () => {
-    app.use(morgan('combined'));
-    app.use((req, res) => {
-      res.send(200);
+  describe('morgan', () => {
+    it('combined', () => {
+      app.use(morgan('combined'));
+      app.use((req, res) => {
+        res.status(200).send('hello, morgan');
+      });
+
+      return perform({
+        httpMethod: 'GET',
+        path: '/',
+        headers: {
+          authorization: 'Basic QWxhZGRpbjpPcGVuU2VzYW1l'
+        },
+        requestContext: {
+          identity: {
+            sourceIp: '1.3.3.7'
+          }
+        }
+      })
+      .then(response => {
+        expect(response.statusCode).to.equal(200);
+      });
     });
 
-    return perform({
-      httpMethod: 'GET',
-      path: '/',
-    })
-    .then(response => {
-      expect(response.statusCode).to.equal(200);
+    it('short', () => {
+      app.use(morgan('short'));
+      app.use((req, res) => {
+        res.status(200).send('hello, morgan');
+      });
+
+      return perform({
+        httpMethod: 'GET',
+        path: '/',
+        headers: {
+          authorization: 'Basic QWxhZGRpbjpPcGVuU2VzYW1l'
+        },
+        requestContext: {
+          identity: {
+            sourceIp: '1.3.3.7'
+          }
+        }
+      })
+      .then(response => {
+        expect(response.statusCode).to.equal(200);
+      });
     });
   });
 });
