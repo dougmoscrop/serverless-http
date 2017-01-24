@@ -18,7 +18,7 @@ module.exports = function(app, opts) {
       const context = ctx || {};
       const event = cleanupEvent(evt, context, options);
 
-      const req = new Request(event);
+      const req = new Request(event, context);
       const res = new Response(req);
 
       onFinished(req, function(err) {

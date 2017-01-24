@@ -4,7 +4,7 @@ const http = require('http');
 const url = require('url');
 
 module.exports = class ServerlessRequest extends http.IncomingMessage {
-  constructor(event) {
+  constructor(event, context) {
     super({
       encrypted: true,
       readable: false,
@@ -22,7 +22,9 @@ module.exports = class ServerlessRequest extends http.IncomingMessage {
       url: url.format({
         pathname: event.path,
         query: event.queryStringParameters
-      })
+      }),
+      _lambdaEvent: event,
+      _lambdaContext: context
     });
 
     this.push(event.body);
