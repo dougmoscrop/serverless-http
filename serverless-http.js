@@ -5,12 +5,18 @@ const onFinished = require('on-finished');
 const Request = require('./request');
 const Response = require('./response');
 
-module.exports = function(app) {
+const defaultOptions = {
+  requestId: 'x-request-id'
+};
+
+module.exports = function(app, opts) {
   const handler = getHandler(app);
+  const options = Object.assign({}, defaultOptions, opts);
 
   return (evt, ctx, callback) => {
     try {
-      const event = cleanupEvent(evt);
+      const context = ctx || {};
+      const event = cleanupEvent(evt, context, options);
 
       const req = new Request(event);
       const res = new Response(req);
@@ -58,7 +64,7 @@ function getHandler(app) {
   throw new Error('serverless-http only supports koa, express/connect or a generic http listener');
 }
 
-function cleanupEvent(evt) {
+function cleanupEvent(evt, ctx, options) {
   const event = evt || {};
 
   event.httpMethod = event.httpMethod || 'GET';
@@ -80,6 +86,11 @@ function cleanupEvent(evt) {
 
   if (typeof event.headers['content-length'] == 'undefined') {
     event.headers['content-length'] = event.body.length;
+  }
+
+  if (options.requestId && typeof options.requestId === 'string') {
+    const requestId = options.requestId.toLowerCase();
+    event.headers[requestId] = event.headers[requestId] || ctx.awsRequestId;
   }
 
   return event;
