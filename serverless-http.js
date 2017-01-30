@@ -9,42 +9,61 @@ const defaultOptions = {
   requestId: 'x-request-id'
 };
 
+function finish(item, transform) {
+  return new Promise((resolve, reject) => {
+    onFinished(item, function(err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  })
+  .then(() => {
+    if (typeof transform === 'function') {
+      return transform(item);
+    } else if (typeof transform === 'object' && transform !== null) {
+      Object.assign(item, transform);
+    }
+  })
+  .then(() => item);
+}
+
 module.exports = function(app, opts) {
   const handler = getHandler(app);
   const options = Object.assign({}, defaultOptions, opts);
 
   return (evt, ctx, callback) => {
-    try {
-      const context = ctx || {};
-      const event = cleanupEvent(evt, context, options);
+    Promise.resolve()
+      .then(() => {
+        const context = ctx || {};
+        const event = cleanupEvent(evt, context, options);
 
-      const req = new Request(event, context);
-      const res = new Response(req);
+        const request = new Request(event, context);
 
-      onFinished(req, function(err) {
-        if (err) {
-          callback(err);
-          return;
-        }
+        return finish(request, options.request)
+          .then(() => {
+            const response = new Response(request);
 
-        onFinished(res, function(err) {
-          if (err) {
-            callback(err);
-            return;
-          }
+            handler(request, response);
 
-          callback(null, {
-            statusCode: res.statusCode,
-            headers: res._headers,
-            body: res._body
+            return finish(response, options.response);
           });
+    })
+    .then(res => {
+      process.nextTick(() => {
+        callback(null, {
+          statusCode: res.statusCode,
+          headers: res._headers,
+          body: res._body
         });
-
-        handler(req, res)
       });
-    } catch (e) {
-      callback(e);
-    }
+    })
+    .catch(e => {
+      process.nextTick(() => {
+        callback(e);
+      });
+    });
   };
 };
 
@@ -88,7 +107,7 @@ function cleanupEvent(evt, ctx, options) {
     event.headers['content-length'] = event.body.length;
   }
 
-  if (options.requestId && typeof options.requestId === 'string') {
+  if (typeof options.requestId === 'string' && options.requestId.length > 0) {
     const requestId = options.requestId.toLowerCase();
     event.headers[requestId] = event.headers[requestId] || ctx.awsRequestId;
   }

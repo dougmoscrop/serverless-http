@@ -34,3 +34,29 @@ Your code is still running in Lambda and API Gateway. This means you are still s
 ## Contributing
 
 Pull requests are welcome! Especially test scenarios for different situations (e.g. multipart)
+
+## Advanced Options
+
+`serverless-http` takes a second argument, `options`, which can contain:
+
+- **requestId**: the header in which to place the AWS Request ID, defaults to `x-request-id` and can be disabled with `false`
+- **request**: a *transform* for the request, before it is sent to the app
+- **response**: a *transform* for the response, before it is returned to Lambda
+
+Here is an example:
+
+
+```javascript
+module.exports.handler = serverless(app, {
+  requestId: 'X-ReqId',
+  request: {
+    key: 'value'
+  },
+  response: function(res) {
+    return Promise.resolve()
+      .then(() => {
+        res.foo = 'bar';
+      });
+  }
+})
+```
