@@ -37,9 +37,9 @@ module.exports = function(app, opts) {
     Promise.resolve()
       .then(() => {
         const context = ctx || {};
-        const event = cleanupEvent(evt, context, options);
+        const event = cleanupEvent(evt);
 
-        const request = new Request(event, context);
+        const request = new Request(event, context, options);
 
         return finish(request, options.request)
           .then(() => {
@@ -83,7 +83,7 @@ function getHandler(app) {
   throw new Error('serverless-http only supports koa, express/connect or a generic http listener');
 }
 
-function cleanupEvent(evt, ctx, options) {
+function cleanupEvent(evt) {
   const event = evt || {};
 
   event.httpMethod = event.httpMethod || 'GET';
@@ -92,25 +92,6 @@ function cleanupEvent(evt, ctx, options) {
   event.headers = event.headers || {};
   event.requestContext = event.requestContext || {};
   event.requestContext.identity = event.requestContext.identity || {};
-
-  event.headers = Object.keys(event.headers).reduce((headers, key) => {
-    headers[key.toLowerCase()] = event.headers[key];
-    return headers;
-  }, {});
-
-  // this only really applies during some tests and invoking a lambda directly
-  if (typeof event.body === 'object' && !Buffer.isBuffer(event.body)) {
-    event.body = JSON.stringify(event.body);
-  }
-
-  if (typeof event.headers['content-length'] == 'undefined') {
-    event.headers['content-length'] = event.body.length;
-  }
-
-  if (typeof options.requestId === 'string' && options.requestId.length > 0) {
-    const requestId = options.requestId.toLowerCase();
-    event.headers[requestId] = event.headers[requestId] || ctx.awsRequestId;
-  }
 
   return event;
 }
