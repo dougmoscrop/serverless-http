@@ -9,7 +9,7 @@ const defaultOptions = {
   requestId: 'x-request-id'
 };
 
-function finish(item, transform) {
+function finish(item, event, context, transform) {
   return new Promise((resolve, reject) => {
     onFinished(item, function(err) {
       if (err) {
@@ -21,7 +21,7 @@ function finish(item, transform) {
   })
   .then(() => {
     if (typeof transform === 'function') {
-      return transform(item);
+      return transform(item, event, context);
     } else if (typeof transform === 'object' && transform !== null) {
       Object.assign(item, transform);
     }
@@ -41,13 +41,13 @@ module.exports = function(app, opts) {
 
         const request = new Request(event, context, options);
 
-        return finish(request, options.request)
+        return finish(request, event, context, options.request)
           .then(() => {
             const response = new Response(request);
 
             handler(request, response);
 
-            return finish(response, options.response);
+            return finish(response, event, context, options.response);
           });
     })
     .then(res => {
