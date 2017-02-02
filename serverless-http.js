@@ -54,7 +54,7 @@ module.exports = function(app, opts) {
       process.nextTick(() => {
         callback(null, {
           statusCode: res.statusCode,
-          headers: res._headers,
+          headers: sanitizeHeaders(res._headers),
           body: res._body
         });
       });
@@ -94,4 +94,17 @@ function cleanupEvent(evt) {
   event.requestContext.identity = event.requestContext.identity || {};
 
   return event;
+}
+
+function sanitizeHeaders(headers) {
+  headers = headers || {};
+  return Object.keys(headers).reduce((memo, key) => {
+      const value = headers[key];
+      if (Array.isArray(value)) {
+        memo[key] = value.join(', ');
+      } else {
+        memo[key] = value;
+      }
+      return memo;
+    }, {});
 }
