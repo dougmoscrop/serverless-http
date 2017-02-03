@@ -105,4 +105,50 @@ describe('spec', () => {
       done();
     });
   });
+
+  it('should support transforming the request', (done) => {
+    let request;
+    const event = {}
+    const context = {}
+
+    const handler = serverless((req, res) => {
+      request = req;
+      res.end('');
+    }, {
+      request: (req, evt, ctx) => {
+        req.event = evt;
+        req.context = ctx;
+      }
+    });
+
+    handler(event, context, (err) => {
+      expect(err).to.equal(null);
+      expect(request.event).to.equal(event);
+      expect(request.context).to.equal(context);
+      done();
+    });
+  });
+
+  it('should support transforming the response', (done) => {
+    let response;
+    const event = {}
+    const context = {}
+
+    const handler = serverless((req, res) => {
+      response = res;
+      res.end('');
+    }, {
+      response: (res, evt, ctx) => {
+        res.event = evt;
+        res.context = ctx;
+      }
+    });
+
+    handler(event, context, (err) => {
+      expect(err).to.equal(null);
+      expect(response.event).to.equal(event);
+      expect(response.context).to.equal(context);
+      done();
+    });
+  });
 });

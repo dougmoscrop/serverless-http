@@ -49,9 +49,7 @@ module.exports = class ServerlessRequest extends http.IncomingMessage {
       url: url.format({
         pathname: event.path,
         query: event.queryStringParameters
-      }),
-      _lambdaEvent: event,
-      _lambdaContext: context
+      })
     });
 
     this.push(body);
