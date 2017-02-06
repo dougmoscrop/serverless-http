@@ -240,21 +240,6 @@ describe('koa', () => {
         });
       });
     });
-
-    it('should convert array-typed allow header to csv for not found, unimplemented method', function() {
-      return perform({
-        httpMethod: 'POST',
-        path: '/'
-      })
-      .then(response => {
-        expect(response.statusCode).to.equal(405);
-        expect(response.headers).to.deep.equal({
-          'content-length': '18',
-          'content-type': 'text/plain; charset=utf-8',
-          'allow': 'HEAD, GET'
-        });
-      });
-    });
   });
 
   describe('koa-bodyparser', () => {

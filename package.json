@@ -57,6 +57,7 @@
     "sinon": "^1.17.7"
   },
   "dependencies": {
+    "binary-case": "^1.0.0",
     "on-finished": "2.3.0"
   }
 }

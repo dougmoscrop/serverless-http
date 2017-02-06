@@ -124,4 +124,32 @@ describe('generic http listener', () => {
       expect(response.body).to.equal('this is a test\n');
     });
   });
+
+  it('should convert array-typed headers to csv and set-cookies workaround with binarycase', function() {
+    app = function (req, res) {
+      const body = 'setting cookies';
+
+      res.setHeader('Content-Length', body.length);
+      res.setHeader('Content-Type', 'text/plain');
+      res.setHeader('Set-Cookie', ['foo=bar', 'bar=baz']);
+      res.setHeader('Allow', ['GET', 'HEAD']);
+      res.statusCode = 200;
+      res.end();
+    };
+
+    return perform({
+      httpMethod: 'GET',
+      path: '/'
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(200);
+      expect(response.headers).to.deep.equal({
+        allow: 'GET, HEAD',
+        'Set-cookie': 'bar=baz',
+        'content-length': 15,
+        'content-type': 'text/plain',
+        'set-cookie': 'foo=bar'
+      });
+    });
+  });
 });
