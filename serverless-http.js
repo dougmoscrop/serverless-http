@@ -1,6 +1,7 @@
 'use strict';
 
 const onFinished = require('on-finished');
+const binarycase = require('binary-case');
 
 const Request = require('./request');
 const Response = require('./response');
@@ -101,7 +102,13 @@ function sanitizeHeaders(headers) {
   return Object.keys(headers).reduce((memo, key) => {
       const value = headers[key];
       if (Array.isArray(value)) {
-        memo[key] = value.join(', ');
+        if (key.toLowerCase() === 'set-cookie') {
+          value.forEach((cookie, i) => {
+            memo[binarycase(key, i)] = cookie;
+          });
+        } else {
+          memo[key] = value.join(', ');
+        }
       } else {
         memo[key] = value;
       }
