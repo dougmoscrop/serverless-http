@@ -15,7 +15,9 @@
   },
   "scripts": {
     "test": "istanbul cover node_modules/mocha/bin/_mocha --",
-    "posttest": "eslint ."
+    "posttest": "eslint .",
+    "preversion": "update-contrib",
+    "postpublish": "git push origin --all; git push origin --tags"
   },
   "keywords": [
     "serverless",
@@ -32,9 +34,12 @@
   ],
   "author": "Doug Moscrop <doug.moscrop@gmail.com> (http://www.github.com/dougmoscrop)",
   "contributors": [
-    "Kevin Tonon <kevin@betweenconcepts.com> (http://guthub.com/ktonon)",
-    "Derek MacDonald (http://github.com/demacdonald)",
-    "Roch Devost (https://github.com/rochdev)"
+    "Doug Moscrop <doug.moscrop@gmail.com> (https://github.com/dougmoscrop)",
+    "Roch Devost (https://github.com/rochdev)",
+    "Bryan Gamble (https://github.com/bdgamble)",
+    "Derek MacDonald (https://github.com/demacdonald)",
+    "Filip Skokan <panva.ip@gmail.com> (https://github.com/panva)",
+    "Kevin Tonon <kevin@betweenconcepts.com> (https://github.com/ktonon)"
   ],
   "homepage": "https://github.com/dougmoscrop/serverless-http",
   "license": "MIT",
@@ -54,7 +59,8 @@
     "morgan": "^1.7.0",
     "on-headers": "^1.0.1",
     "publish": "^0.6.0",
-    "sinon": "^1.17.7"
+    "sinon": "^1.17.7",
+    "update-contributors": "^0.3.1"
   },
   "dependencies": {
     "binary-case": "^1.0.0",
