@@ -1,5 +1,6 @@
 test/
 coverage/
+scripts/
 .editorconfig
 .eslintignore
 .eslintrc

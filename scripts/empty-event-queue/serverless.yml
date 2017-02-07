@@ -1,0 +1,23 @@
+service: serverless-http-test
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+
+functions:
+  true:
+    handler: handler.true
+    memorySize: 512
+    timeout: 10
+    events:
+      - http:
+          path: /definitions
+          method: ANY
+  false:
+    handler: handler.false
+    memorySize: 512
+    timeout: 10
+    events:
+      - http:
+          path: /definitions
+          method: ANY
