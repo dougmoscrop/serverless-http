@@ -1,6 +1,7 @@
 'use strict';
 
 const onHeaders = require('on-headers');
+const onFinished = require('on-finished');
 
 const serverless = require('../serverless-http'),
   expect = require('chai').expect;
@@ -34,6 +35,36 @@ describe('spec', () => {
         called = true;
       });
       res.end('');
+    });
+
+    handler(null, {}, () => {
+      expect(called).to.be.true;
+      done();
+    });
+  });
+
+  it('should trigger on-finished for res', (done) => {
+    let called = false;
+    const handler = serverless((req, res) => {
+      onFinished(res, () => {
+        called = true;
+      });
+      res.end('');
+    });
+
+    handler(null, {}, () => {
+      expect(called).to.be.true;
+      done();
+    });
+  });
+
+  it('should trigger on-finished for req', (done) => {
+    let called = false;
+    const handler = serverless((req, res) => {
+      onFinished(req, () => {
+        called = true;
+        res.end('');
+      });
     });
 
     handler(null, {}, () => {

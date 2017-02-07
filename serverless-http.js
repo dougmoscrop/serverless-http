@@ -1,34 +1,15 @@
 'use strict';
 
-const onFinished = require('on-finished');
-const binarycase = require('binary-case');
+const finish = require('./lib/finish');
+const sanitizeHeaders = require('./lib/sanitize-headers');
+const getHandler = require('./lib/get-handler');
 
-const Request = require('./request');
-const Response = require('./response');
+const Request = require('./lib/request');
+const Response = require('./lib/response');
 
 const defaultOptions = {
   requestId: 'x-request-id'
 };
-
-function finish(item, event, context, transform) {
-  return new Promise((resolve, reject) => {
-    onFinished(item, function(err) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  })
-  .then(() => {
-    if (typeof transform === 'function') {
-      return transform(item, event, context);
-    } else if (typeof transform === 'object' && transform !== null) {
-      Object.assign(item, transform);
-    }
-  })
-  .then(() => item);
-}
 
 module.exports = function(app, opts) {
   const handler = getHandler(app);
@@ -68,22 +49,6 @@ module.exports = function(app, opts) {
   };
 };
 
-function getHandler(app) {
-  if (typeof app.callback === 'function') {
-    return app.callback();
-  }
-
-  if (typeof app.handle === 'function') {
-    return app.handle.bind(app);
-  }
-
-  if (typeof app === 'function') {
-    return app;
-  }
-
-  throw new Error('serverless-http only supports koa, express/connect or a generic http listener');
-}
-
 function cleanupEvent(evt) {
   const event = evt || {};
 
@@ -95,23 +60,4 @@ function cleanupEvent(evt) {
   event.requestContext.identity = event.requestContext.identity || {};
 
   return event;
-}
-
-function sanitizeHeaders(headers) {
-  headers = headers || {};
-  return Object.keys(headers).reduce((memo, key) => {
-      const value = headers[key];
-      if (Array.isArray(value)) {
-        if (key.toLowerCase() === 'set-cookie') {
-          value.forEach((cookie, i) => {
-            memo[binarycase(key, i)] = cookie;
-          });
-        } else {
-          memo[key] = value.join(', ');
-        }
-      } else {
-        memo[key] = value;
-      }
-      return memo;
-    }, {});
 }
