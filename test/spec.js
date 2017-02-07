@@ -51,7 +51,7 @@ describe('spec', () => {
       res.end('');
     });
 
-    handler(null, { awsRequestId: 'foo' }, () => {
+    handler({ requestContext: { requestId: 'foo' } }, {}, () => {
       expect(called).to.be.truthy;
       expect(called.headers['x-request-id']).to.eql('foo');
       done();
@@ -67,7 +67,7 @@ describe('spec', () => {
       res.end('');
     }, { requestId: 'Custom-Request-ID' });
 
-    handler(null, { awsRequestId: 'bar' }, () => {
+    handler({ requestContext: { requestId: 'bar' } }, {}, () => {
       expect(called).to.be.truthy;
       expect(called.headers['custom-request-id']).to.eql('bar');
       done();
@@ -83,7 +83,7 @@ describe('spec', () => {
       res.end('');
     }, { requestId: 'Custom-Request-ID' });
 
-    handler({ headers: { 'custom-request-id': 'abc' } }, { awsRequestId: 'bar' }, () => {
+    handler({ headers: { 'custom-request-id': 'abc' }, requestContext: { requestId: 'bar' } }, {}, () => {
       expect(called).to.be.truthy;
       expect(called.headers['custom-request-id']).to.eql('abc');
       done();
@@ -99,7 +99,7 @@ describe('spec', () => {
       res.end('');
     }, { requestId: false });
 
-    handler(null, { awsRequestId: 'bar' }, () => {
+    handler({ requestContext: { requestId: 'bar' } }, {}, () => {
       expect(called).to.be.truthy;
       expect(called.headers['x-request-id']).to.be.undefined;
       done();

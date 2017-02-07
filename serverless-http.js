@@ -40,7 +40,7 @@ module.exports = function(app, opts) {
         const context = ctx || {};
         const event = cleanupEvent(evt);
 
-        const request = new Request(event, context, options);
+        const request = new Request(event, options);
 
         return finish(request, event, context, options.request)
           .then(() => {

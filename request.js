@@ -19,7 +19,7 @@ function getBody(event) {
 }
 
 module.exports = class ServerlessRequest extends http.IncomingMessage {
-  constructor(event, context, options) {
+  constructor(event, options) {
     super({
       encrypted: true,
       readable: false,
@@ -35,7 +35,7 @@ module.exports = class ServerlessRequest extends http.IncomingMessage {
 
     if (typeof options.requestId === 'string' && options.requestId.length > 0) {
       const requestId = options.requestId.toLowerCase();
-      headers[requestId] = headers[requestId] || context.awsRequestId;
+      headers[requestId] = headers[requestId] || event.requestContext.requestId;
     }
 
     Object.assign(this, {
