@@ -43,8 +43,9 @@ Pull requests are welcome! Especially test scenarios for different situations (e
 - **request**: a *transform* for the request, before it is sent to the app
 - **response**: a *transform* for the response, before it is returned to Lambda
 
-Here is an example:
+A transform is either a function (req|res, event, context) or an Object to be assigned.
 
+Here is an example:
 
 ```javascript
 module.exports.handler = serverless(app, {
