@@ -182,4 +182,21 @@ describe('spec', () => {
       done();
     });
   });
+
+  it('should handle unicode when inferring content-length', (done) => {
+    const body = `{"foo":"অ"}`;
+
+    let length;
+
+    const handler = serverless((req, res) => {
+      length = req.headers['content-length'];
+      res.end('');
+    });
+
+    handler({ body }, context, (err) => {
+      expect(err).to.equal(null);
+      expect(length).to.equal(13);
+      done();
+    });
+  });
 });
