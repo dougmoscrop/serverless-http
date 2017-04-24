@@ -14,7 +14,7 @@ describe('express', () => {
     perform = function(request) {
       const handler = serverless(app);
       return new Promise((resolve, reject) => {
-        handler(request, null, (err, response) => {
+        handler(request, {}, (err, response) => {
           if (err) {
             reject(err);
           } else {

@@ -17,7 +17,7 @@ describe('koa', () => {
     perform = function(request) {
       const handler = serverless(app);
       return new Promise((resolve, reject) => {
-        handler(request, null, (err, response) => {
+        handler(request, {}, (err, response) => {
           if (err) {
             reject(err);
           } else {
@@ -135,6 +135,22 @@ describe('koa', () => {
       expect(response.body).to.equal('Internal Server Error')
     });
   });
+
+it('auth middleware should set statusCode 401', () => {
+    app.use(function* () {
+      this.throw(`Unauthorized: ${this.request.method} ${this.request.url}`, 401);
+    });
+    return perform({
+      httpMethod: 'GET',
+      path: '/'
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(401);
+      console.log(response);
+	//expect(response.body).to.equal('Internal Server Error')
+    });
+  });
+
 
   describe('koa-route', () => {
 
