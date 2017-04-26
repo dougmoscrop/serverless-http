@@ -146,8 +146,6 @@ it('auth middleware should set statusCode 401', () => {
     })
     .then(response => {
       expect(response.statusCode).to.equal(401);
-      console.log(response);
-	//expect(response.body).to.equal('Internal Server Error')
     });
   });
 
