@@ -16,6 +16,8 @@ module.exports = function(app, opts) {
   const options = Object.assign({}, defaultOptions, opts);
 
   return (evt, ctx, callback) => {
+    ctx.callbackWaitsForEmptyEventLoop = false;
+
     Promise.resolve()
       .then(() => {
         const context = ctx || {};

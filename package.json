@@ -50,7 +50,7 @@
     "eslint-plugin-mocha": "^4.7.0",
     "express": "^4.14.1",
     "istanbul": "^0.4.5",
-    "koa": "^1.2.4",
+    "koa": "1.4.0",
     "koa-bodyparser": "^2.2.0",
     "koa-route": "^2.4.2",
     "koa-router": "^5.4.0",
