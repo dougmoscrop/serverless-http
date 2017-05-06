@@ -14,10 +14,10 @@
     "url": "https://github.com/dougmoscrop/serverless-http"
   },
   "scripts": {
-    "test": "istanbul cover node_modules/mocha/bin/_mocha --",
+    "test": "nyc mocha",
     "posttest": "eslint .",
     "preversion": "update-contrib",
-    "postpublish": "git push origin --all; git push origin --tags"
+    "postpublish": "git push --tags"
   },
   "keywords": [
     "serverless",
@@ -58,6 +58,7 @@
     "koa-serve": "^0.1.7",
     "mocha": "^3.1.2",
     "morgan": "^1.8.0",
+    "nyc": "^10.3.2",
     "on-finished": "^2.3.0",
     "on-headers": "^1.0.1",
     "publish": "^0.6.0",

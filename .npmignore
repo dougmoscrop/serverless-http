@@ -1,6 +1,7 @@
 test/
 coverage/
 docs/
+.nyc_output/
 .editorconfig
 .eslintignore
 .eslintrc
