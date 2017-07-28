@@ -3,25 +3,10 @@
 const url = require('url'),
   fs = require('fs'),
   expect = require('chai').expect,
-  serverless = require('../serverless-http');
+  request = require('./util/request');
 
 describe('generic http listener', () => {
-  let app, perform;
-
-  beforeEach(function() {
-    perform = function(request) {
-      const handler = serverless(app);
-      return new Promise((resolve, reject) => {
-        handler(request, {}, (err, response) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(response);
-          }
-        });
-      });
-    }
-  });
+  let app;
 
   it('should set statusCode and default body', () => {
     app = function(req, res) {
@@ -30,7 +15,7 @@ describe('generic http listener', () => {
       res.end();
     };
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/'
     })
@@ -55,7 +40,7 @@ describe('generic http listener', () => {
       });
     };
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/',
       body: 'hello, world'
@@ -75,7 +60,7 @@ describe('generic http listener', () => {
       res.end();
     };
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/',
       queryStringParameters: {
@@ -97,7 +82,7 @@ describe('generic http listener', () => {
       }
     };
 
-    return perform({
+    return request(app, {
       httpMethod: 'PUT',
       path: '/',
     })
@@ -115,7 +100,7 @@ describe('generic http listener', () => {
       fileStream.pipe(res);
     };
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/file.txt',
     })
@@ -137,7 +122,7 @@ describe('generic http listener', () => {
       res.end();
     };
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/'
     })

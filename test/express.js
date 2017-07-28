@@ -4,25 +4,13 @@ const express = require('express'),
   bodyParser = require('body-parser'),
   morgan = require('morgan'),
   expect = require('chai').expect,
-  serverless = require('../serverless-http');
+  request = require('./util/request');
 
 describe('express', () => {
-  let app, perform;
+  let app;
 
   beforeEach(function() {
     app = express();
-    perform = function(request) {
-      const handler = serverless(app);
-      return new Promise((resolve, reject) => {
-        handler(request, {}, (err, response) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(response);
-          }
-        });
-      });
-    }
   });
 
   it('basic middleware should set statusCode and default body', () => {
@@ -30,7 +18,7 @@ describe('express', () => {
       res.status(418).send('I\'m a teapot');
     });
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/'
     })
@@ -46,7 +34,7 @@ describe('express', () => {
       res.status(200).send(req.body);
     });
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/',
       body: 'hello, world',
@@ -67,7 +55,7 @@ describe('express', () => {
       res.status(200).send(req.body.hello);
     });
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/',
       body: {
@@ -88,7 +76,7 @@ describe('express', () => {
       res.status(200).send(req.query.foo);
     });
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/',
       queryStringParameters: {
@@ -109,7 +97,7 @@ describe('express', () => {
       res.status(201).send('bar');
     });
 
-    return perform({
+    return request(app, {
       httpMethod: 'PUT',
       path: '/',
     })
@@ -122,7 +110,7 @@ describe('express', () => {
   it('should serve files', () => {
     app.use(express.static('test'));
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/file.txt',
     })
@@ -139,7 +127,7 @@ describe('express', () => {
         res.status(200).send('hello, morgan');
       });
 
-      return perform({
+      return request(app, {
         httpMethod: 'GET',
         path: '/',
         headers: {
@@ -162,7 +150,7 @@ describe('express', () => {
         res.status(200).send('hello, morgan');
       });
 
-      return perform({
+      return request(app, {
         httpMethod: 'GET',
         path: '/',
         headers: {

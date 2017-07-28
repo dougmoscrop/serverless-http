@@ -7,25 +7,13 @@ const koa = require('koa'),
   Router = require('koa-router'),
   expect = require('chai').expect,
   zlib = require('zlib'),
-  serverless = require('../serverless-http');
+  request = require('./util/request');
 
 describe('koa', () => {
-  let app, perform;
+  let app;
 
   beforeEach(function() {
     app = koa();
-    perform = function(request) {
-      const handler = serverless(app);
-      return new Promise((resolve, reject) => {
-        handler(request, {}, (err, response) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(response);
-          }
-        });
-      });
-    }
   });
 
   it('basic middleware should set statusCode and default body', () => {
@@ -34,7 +22,7 @@ describe('koa', () => {
       yield* next;
     });
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/'
     })
@@ -50,7 +38,7 @@ describe('koa', () => {
       yield* next;
     });
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/',
       queryStringParameters: {
@@ -70,7 +58,7 @@ describe('koa', () => {
       yield* next;
     });
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/'
     })
@@ -87,7 +75,7 @@ describe('koa', () => {
       yield* next;
     });
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/'
     })
@@ -109,7 +97,7 @@ describe('koa', () => {
       yield* next;
     });
 
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/',
       headers: {
@@ -126,7 +114,7 @@ describe('koa', () => {
     app.use(function* () {
       throw new Error('hey man, nice shot');
     });
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/'
     })
@@ -140,7 +128,7 @@ it('auth middleware should set statusCode 401', () => {
     app.use(function* () {
       this.throw(`Unauthorized: ${this.request.method} ${this.request.url}`, 401);
     });
-    return perform({
+    return request(app, {
       httpMethod: 'GET',
       path: '/'
     })
@@ -166,7 +154,7 @@ it('auth middleware should set statusCode 401', () => {
     });
 
     it('should get path information when it matches exactly', () => {
-      return perform({
+      return request(app, {
         httpMethod: 'GET',
         path: '/foo'
       })
@@ -177,7 +165,7 @@ it('auth middleware should set statusCode 401', () => {
     });
 
     it('should get path information when it matches with params', () => {
-      return perform({
+      return request(app, {
         httpMethod: 'GET',
         path: '/foo/baz'
       })
@@ -188,7 +176,7 @@ it('auth middleware should set statusCode 401', () => {
     });
 
     it('should get method information', () => {
-      return perform({
+      return request(app, {
         httpMethod: 'POST',
         path: '/foo'
       })
@@ -199,7 +187,7 @@ it('auth middleware should set statusCode 401', () => {
     });
 
     it('should allow 404s', () => {
-      return perform({
+      return request(app, {
         httpMethod: 'POST',
         path: '/missing'
       })
@@ -231,7 +219,7 @@ it('auth middleware should set statusCode 401', () => {
     });
 
     it('should get when it matches', function() {
-      return perform({
+      return request(app, {
         httpMethod: 'GET',
         path: '/'
       })
@@ -242,7 +230,7 @@ it('auth middleware should set statusCode 401', () => {
     });
 
     it('should 404 when route does not match', function() {
-      return perform({
+      return request(app, {
         httpMethod: 'GET',
         path: '/missing'
       })
@@ -271,7 +259,7 @@ it('auth middleware should set statusCode 401', () => {
         this.body = {};
         actual = this.request.body;
       });
-      return perform({
+      return request(app, {
         httpMethod: 'GET',
         path: '/',
         headers: {
@@ -301,7 +289,7 @@ it('auth middleware should set statusCode 401', () => {
         });
       })
       .then((zipped) => {
-        return perform({
+        return request(app, {
           httpMethod: 'GET',
           path: '/',
           headers: {
@@ -318,6 +306,25 @@ it('auth middleware should set statusCode 401', () => {
         });
       });
     });
+
+    it('can handle DELETE with no body', () => {
+      let called;
+      app.use(function*() {
+        console.log('deleting');
+        this.status = 204;
+        called = true;
+      });
+      return request(app, {
+        httpMethod: 'DELETE',
+        path: '/',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(() => {
+        expect(called).to.equal(true);
+      });
+    });
   });
 
   describe('koa-serve', () => {
@@ -327,7 +334,7 @@ it('auth middleware should set statusCode 401', () => {
     });
 
     it('should serve a text file', () => {
-      return perform({
+      return request(app, {
         httpMethod: 'GET',
         path: '/test/file.txt'
       })
