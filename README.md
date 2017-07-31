@@ -2,6 +2,12 @@
 
 [![Build Status](https://travis-ci.org/dougmoscrop/serverless-http.svg?branch=master)](https://travis-ci.org/dougmoscrop/serverless-http)
 
+## Binary Support
+
+Starting with v1.5.0, `serverless-http` supports API Gateway binary modes. Binary support will base64 decode the incoming request body - when API Gateway specifies that it is encoded - and will base64 encode a response body if the `Content-Type` or `Content-Encoding` matches a known binary type/encoding. This means you can gzip your JSON or return a raw image, but it requires advanced configuration within API Gateway and is generally not fun to work with (consider yourself warned!)
+
+Existing serverless-http APIs (i.e. those that return JSON as text) should not be affected. See advanced configuration documentation for details.
+
 ## Description
 
 This module allows you to 'wrap' your API for serverless use. No HTTP server, no ports or sockets. Just your code in the same execution pipeline you are already familiar with.

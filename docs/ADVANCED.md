@@ -24,3 +24,33 @@ module.exports.handler = serverless(app, {
   }
 })
 ```
+
+### Binary Mode
+
+Binary mode detection looks at the BINARY_CONTENT_TYPES environment variable, or you can specify an array of types, or a custom function:
+
+```js
+// turn off any attempt to base64 encode responses -- probably Not Going To Work At All
+serverless(app, {
+  binary: false
+});
+
+ // this is the default, look at content-encoding vs. gzip, deflate and content-type against process.env.BINARY_CONTENT_TYPES
+serverless(app, {
+  binary: true
+});
+
+// set the types yourself - just like BINARY_CONTENT_TYPES but using an array you pass in, rather than an environment varaible
+serverless(app, {
+  binary: ['application/json', 'image/png']
+});
+
+// your own custom callback
+serverless(app, {
+  binary: function(headers) {
+    return ...
+  }
+});
+```
+
+Note that content types are compared explicitly - there's no `image/*` type wildcards.

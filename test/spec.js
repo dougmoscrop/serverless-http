@@ -199,4 +199,17 @@ describe('spec', () => {
       done();
     });
   });
+
+  it('should throw if event.body is not a string', (done) => {
+    const body = 42;
+
+    const handler = serverless((req, res) => {
+      res.end('');
+    });
+
+    handler({ body }, context, (err) => {
+      expect(err.message).to.equal('Unexpected event.body type: number');
+      done();
+    });
+  });
 });

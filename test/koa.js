@@ -2,6 +2,7 @@
 
 const koa = require('koa'),
   route = require('koa-route'),
+  compress = require('koa-compress'),
   bodyparser = require('koa-bodyparser'),
   serve = require('koa-serve'),
   Router = require('koa-router'),
@@ -275,7 +276,7 @@ it('auth middleware should set statusCode 401', () => {
       });
     });
 
-    it('works with gzip', () => {
+    it('works with gzip (base64 encoded string)', () => {
       let actual;
       app.use(function*() {
         this.status = 204;
@@ -297,7 +298,8 @@ it('auth middleware should set statusCode 401', () => {
             'Content-Encoding': 'gzip',
             'Content-Length': zipped.length,
           },
-          body: zipped
+          body: zipped.toString('base64'),
+          isBase64Encoded: true
         })
         .then(() => {
           expect(actual).to.deep.equal({
@@ -310,7 +312,6 @@ it('auth middleware should set statusCode 401', () => {
     it('can handle DELETE with no body', () => {
       let called;
       app.use(function*() {
-        console.log('deleting');
         this.status = 204;
         called = true;
       });
@@ -340,6 +341,34 @@ it('auth middleware should set statusCode 401', () => {
       })
       .then((response) => {
         expect(response.body).to.equal('this is a test\n');
+      });
+    });
+  });
+
+  describe('koa-compress', () => {
+
+    beforeEach(() => {
+      app.use(compress({
+        threshold: 1
+      }));
+      app.use(function* () {
+        this.body = 'this is a test';
+      });
+    });
+
+    it('should serve compressed text (base64 encoded)', () => {
+      return request(app, {
+        httpMethod: 'GET',
+        path: '/',
+        headers: {
+          'accept-encoding': 'deflate'
+        }
+      })
+      .then((response) => {
+        const decoded = Buffer.from(response.body, 'base64');
+        const inflated = zlib.inflateSync(decoded);
+
+        expect(inflated.toString()).to.equal('this is a test');
       });
     });
   });

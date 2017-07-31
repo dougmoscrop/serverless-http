@@ -15,7 +15,7 @@ describe('express', () => {
 
   it('basic middleware should set statusCode and default body', () => {
     app.use(function (req, res) {
-      res.status(418).send('I\'m a teapot');
+      res.status(418).send(`I'm a teapot`);
     });
 
     return request(app, {
@@ -24,7 +24,7 @@ describe('express', () => {
     })
     .then(response => {
       expect(response.statusCode).to.equal(418);
-      expect(response.body).to.equal('I\'m a teapot')
+      expect(response.body).to.equal(`I'm a teapot`)
     });
   });
 
@@ -58,9 +58,9 @@ describe('express', () => {
     return request(app, {
       httpMethod: 'GET',
       path: '/',
-      body: {
+      body: JSON.stringify({
         hello: 'world'
-      },
+      }),
       headers: {
         'Content-Type': 'application/json'
       }

@@ -1,8 +1,10 @@
 'use strict';
 
 const finish = require('./lib/finish');
-const sanitizeHeaders = require('./lib/sanitize-headers');
 const getHandler = require('./lib/get-handler');
+const cleanUpEvent = require('./lib/clean-up-event');
+const sanitizeHeaders = require('./lib/sanitize-headers');
+const isBinary = require('./lib/is-binary');
 
 const Request = require('./lib/request');
 const Response = require('./lib/response');
@@ -21,7 +23,7 @@ module.exports = function(app, opts) {
     Promise.resolve()
       .then(() => {
         const context = ctx || {};
-        const event = cleanupEvent(evt);
+        const event = cleanUpEvent(evt);
 
         const request = new Request(event, options);
 
@@ -36,10 +38,17 @@ module.exports = function(app, opts) {
     })
     .then(res => {
       process.nextTick(() => {
+        const statusCode = res.statusCode;
+        const headers = sanitizeHeaders(res._headers);
+        const isBase64Encoded = isBinary(headers, options);
+        const encoding = isBase64Encoded ? 'base64' : 'utf8';
+        const body = Buffer.concat(res._body).toString(encoding);
+
         callback(null, {
-          statusCode: res.statusCode,
-          headers: sanitizeHeaders(res._headers),
-          body: res._body
+          isBase64Encoded,
+          statusCode,
+          headers,
+          body
         });
       });
     })
@@ -50,16 +59,3 @@ module.exports = function(app, opts) {
     });
   };
 };
-
-function cleanupEvent(evt) {
-  const event = evt || {};
-
-  event.httpMethod = event.httpMethod || 'GET';
-  event.path = event.path || '/';
-  event.body = event.body || '';
-  event.headers = event.headers || {};
-  event.requestContext = event.requestContext || {};
-  event.requestContext.identity = event.requestContext.identity || {};
-
-  return event;
-}
