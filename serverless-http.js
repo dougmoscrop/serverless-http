@@ -19,9 +19,7 @@ module.exports = function(app, opts) {
 
   return (evt, ctx, callback) => {
     
-    ctx.callbackWaitsForEmptyEventLoop = (options.callbackWaitsForEmptyEventLoop != null)
-      ? options.callbackWaitsForEmptyEventLoop
-      : false;
+    ctx.callbackWaitsForEmptyEventLoop = !!options.callbackWaitsForEmptyEventLoop;
 
     Promise.resolve()
       .then(() => {
