@@ -4,6 +4,7 @@ const finish = require('./lib/finish');
 const getHandler = require('./lib/get-handler');
 const cleanUpEvent = require('./lib/clean-up-event');
 const sanitizeHeaders = require('./lib/sanitize-headers');
+const getBody = require('./lib/get-body');
 const isBinary = require('./lib/is-binary');
 
 const Request = require('./lib/request');
@@ -18,7 +19,7 @@ module.exports = function(app, opts) {
   const options = Object.assign({}, defaultOptions, opts);
 
   return (evt, ctx, callback) => {
-    
+
     ctx.callbackWaitsForEmptyEventLoop = !!options.callbackWaitsForEmptyEventLoop;
 
     Promise.resolve()
@@ -42,8 +43,7 @@ module.exports = function(app, opts) {
         const statusCode = res.statusCode;
         const headers = sanitizeHeaders(res._headers);
         const isBase64Encoded = isBinary(headers, options);
-        const encoding = isBase64Encoded ? 'base64' : 'utf8';
-        const body = Buffer.concat(res._body).toString(encoding);
+        const body = getBody(res, isBase64Encoded);
 
         callback(null, {
           isBase64Encoded,

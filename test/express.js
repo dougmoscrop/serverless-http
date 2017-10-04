@@ -15,6 +15,7 @@ describe('express', () => {
 
   it('basic middleware should set statusCode and default body', () => {
     app.use(function (req, res) {
+      console.log('in mw');
       res.status(418).send(`I'm a teapot`);
     });
 
