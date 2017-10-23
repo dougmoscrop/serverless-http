@@ -17,8 +17,7 @@
     "test": "nyc mocha",
     "posttest": "eslint .",
     "preversion": "update-contrib",
-    "prepublish": "git push origin master",
-    "postpublish": "git push --tags"
+    "postpublish": "git push origin master --tags"
   },
   "keywords": [
     "serverless",
