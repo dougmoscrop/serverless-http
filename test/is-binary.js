@@ -1,7 +1,7 @@
 'use strict';
 
 const isBinary = require('../lib/is-binary');
-const { expect } = require('chai');
+const expect = require('chai').expect;
 
 describe('is-binary', function() {
 
