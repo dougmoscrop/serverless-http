@@ -22,7 +22,7 @@ module.exports = function(app, opts) {
 
     ctx.callbackWaitsForEmptyEventLoop = !!options.callbackWaitsForEmptyEventLoop;
 
-    Promise.resolve()
+    return Promise.resolve()
       .then(() => {
         const context = ctx || {};
         const event = cleanUpEvent(evt);
