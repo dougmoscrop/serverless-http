@@ -51,6 +51,7 @@
     "eslint": "^3.15.0",
     "eslint-plugin-mocha": "^4.7.0",
     "express": "^4.14.1",
+    "get-stream": "^3.0.0",
     "istanbul": "^0.4.5",
     "koa": "1.4.0",
     "koa-bodyparser": "^2.2.0",

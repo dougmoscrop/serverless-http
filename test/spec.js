@@ -2,6 +2,7 @@
 
 const onHeaders = require('on-headers');
 const onFinished = require('on-finished');
+const getStream = require('get-stream');
 
 const serverless = require('../serverless-http'),
   expect = require('chai').expect;
@@ -200,7 +201,7 @@ describe('spec', () => {
     });
   });
 
-  it('should throw if event.body is not a string', (done) => {
+  it('should throw if event.body is a number', (done) => {
     const body = 42;
 
     const handler = serverless((req, res) => {
@@ -208,7 +209,55 @@ describe('spec', () => {
     });
 
     handler({ body }, context, (err) => {
-      expect(err.message).to.equal('Unexpected event.body type: number');
+      expect(err).to.be.an('Error')
+        .with.a.property('message', 'Unexpected event.body type: number');
+      done();
+    });
+  });
+
+  it('should throw if event.body is an object but content-type is not json', (done) => {
+    const body = { foo: 'bar' };
+
+    const handler = serverless((req, res) => {
+      res.end('');
+    });
+
+    handler({ body }, context, (err) => {
+      expect(err).to.be.an('Error')
+        .with.a.property('message', 'event.body was an object but content-type is not json');
+      done();
+    });
+  });
+
+  it('should accept a Buffer body', (done) => {
+    const body = Buffer.from('hello world');
+
+    const handler = serverless((req, res) => {
+      getStream(req).then(str => {
+        res.end(str);
+      });
+    });
+
+    handler({ body }, context, (err, res) => {
+      expect(res).to.be.an('Object')
+        .with.a.property('body', 'hello world');
+      done();
+    });
+  });
+
+  it('should stringify an Object body if content-type is json', (done) => {
+    const body = {foo:'bar'};
+    const headers = { 'content-type': 'application/json' };
+
+    const handler = serverless((req, res) => {
+      getStream(req).then(str => {
+        res.end(str);
+      });
+    });
+
+    handler({ body, headers }, context, (err, res) => {
+      expect(res).to.be.an('Object')
+        .with.a.property('body', '{"foo":"bar"}');
       done();
     });
   });
