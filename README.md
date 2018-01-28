@@ -4,5 +4,5 @@ Original (https://github.com/dougmoscrop/serverless-http). Just slightly modifie
 
 ## modifications
 
-In (./lib/response.js), I renamed '_body' to '__body' to avoid conflicts with restify's response.
-In (./lib/get-body.js), I renamed '_body' to '__body' to be in sync with the rename in (./lib/response.js).
+- In (./lib/response.js), I renamed `_body` to `__body` to avoid conflicts with restify's response.
+- In (./lib/get-body.js), I renamed `_body` to `__body` to be in sync with the rename in (./lib/response.js).
