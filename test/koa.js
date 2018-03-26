@@ -25,7 +25,9 @@ describe('koa', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      path: '/'
+      requestContext: {
+        path: '/'
+      }
     })
     .then(response => {
       expect(response.statusCode).to.equal(418);
@@ -41,7 +43,9 @@ describe('koa', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      path: '/',
+      requestContext: {
+        path: '/'
+      },
       queryStringParameters: {
         x: 'y'
       }
@@ -61,7 +65,9 @@ describe('koa', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      path: '/'
+      requestContext: {
+        path: '/'
+      }
     })
     .then(response => {
       expect(response.statusCode).to.equal(201);
@@ -78,7 +84,9 @@ describe('koa', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      path: '/'
+      requestContext: {
+        path: '/'
+      }
     })
     .then(response => {
       expect(response.statusCode).to.equal(200);
@@ -100,7 +108,9 @@ describe('koa', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      path: '/',
+      requestContext: {
+        path: '/'
+      },
       headers: {
         'X-Request-Id': 'abc'
       }
@@ -117,7 +127,9 @@ describe('koa', () => {
     });
     return request(app, {
       httpMethod: 'GET',
-      path: '/'
+      requestContext: {
+        path: '/'
+      }
     })
     .then(response => {
       expect(response.statusCode).to.equal(500);
@@ -131,7 +143,9 @@ it('auth middleware should set statusCode 401', () => {
     });
     return request(app, {
       httpMethod: 'GET',
-      path: '/'
+      requestContext: {
+        path: '/'
+      }
     })
     .then(response => {
       expect(response.statusCode).to.equal(401);
@@ -157,7 +171,9 @@ it('auth middleware should set statusCode 401', () => {
     it('should get path information when it matches exactly', () => {
       return request(app, {
         httpMethod: 'GET',
-        path: '/foo'
+        requestContext: {
+          path: '/foo'
+        }
       })
       .then(response => {
         expect(response.statusCode).to.equal(200);
@@ -168,7 +184,9 @@ it('auth middleware should set statusCode 401', () => {
     it('should get path information when it matches with params', () => {
       return request(app, {
         httpMethod: 'GET',
-        path: '/foo/baz'
+        requestContext: {
+          path: '/foo/baz'
+        }
       })
       .then(response => {
         expect(response.statusCode).to.equal(200);
@@ -179,7 +197,9 @@ it('auth middleware should set statusCode 401', () => {
     it('should get method information', () => {
       return request(app, {
         httpMethod: 'POST',
-        path: '/foo'
+        requestContext: {
+          path: '/foo'
+        }
       })
       .then(response => {
         expect(response.statusCode).to.equal(201);
@@ -190,7 +210,9 @@ it('auth middleware should set statusCode 401', () => {
     it('should allow 404s', () => {
       return request(app, {
         httpMethod: 'POST',
-        path: '/missing'
+        requestContext: {
+          path: '/missing'
+        }
       })
       .then(response => {
         expect(response.statusCode).to.equal(404);
@@ -222,7 +244,9 @@ it('auth middleware should set statusCode 401', () => {
     it('should get when it matches', function() {
       return request(app, {
         httpMethod: 'GET',
-        path: '/'
+        requestContext: {
+          path: '/'
+        }
       })
       .then((response) => {
         expect(response.statusCode).to.equal(200);
@@ -233,7 +257,9 @@ it('auth middleware should set statusCode 401', () => {
     it('should 404 when route does not match', function() {
       return request(app, {
         httpMethod: 'GET',
-        path: '/missing'
+        requestContext: {
+          path: '/missing'
+        }
       })
       .then((response) => {
         expect(response.statusCode).to.equal(404);
@@ -262,7 +288,9 @@ it('auth middleware should set statusCode 401', () => {
       });
       return request(app, {
         httpMethod: 'GET',
-        path: '/',
+        requestContext: {
+          path: '/'
+        },
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': body.length
@@ -292,7 +320,9 @@ it('auth middleware should set statusCode 401', () => {
       .then((zipped) => {
         return request(app, {
           httpMethod: 'GET',
-          path: '/',
+          requestContext: {
+            path: '/'
+          },
           headers: {
             'Content-Type': 'application/json',
             'Content-Encoding': 'gzip',
@@ -317,7 +347,9 @@ it('auth middleware should set statusCode 401', () => {
       });
       return request(app, {
         httpMethod: 'DELETE',
-        path: '/',
+        requestContext: {
+          path: '/'
+        },
         headers: {
           'Content-Type': 'application/json'
         }
@@ -337,7 +369,9 @@ it('auth middleware should set statusCode 401', () => {
     it('should serve a text file', () => {
       return request(app, {
         httpMethod: 'GET',
-        path: '/test/file.txt'
+        requestContext: {
+          path: '/test/file.txt'
+        }
       })
       .then((response) => {
         expect(response.body).to.equal('this is a test\n');
@@ -359,7 +393,9 @@ it('auth middleware should set statusCode 401', () => {
     it('should serve compressed text (base64 encoded)', () => {
       return request(app, {
         httpMethod: 'GET',
-        path: '/',
+        requestContext: {
+          path: '/'
+        },
         headers: {
           'accept-encoding': 'deflate'
         }

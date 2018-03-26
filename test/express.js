@@ -21,7 +21,9 @@ describe('express', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      path: '/'
+      requestContext: {
+        path: '/'
+      }
     })
     .then(response => {
       expect(response.statusCode).to.equal(418);
@@ -37,7 +39,9 @@ describe('express', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      path: '/',
+      requestContext: {
+        path: '/'
+      },
       body: 'hello, world',
       headers: {
         'Content-Type': 'text/plain',
@@ -58,7 +62,9 @@ describe('express', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      path: '/',
+      requestContext: {
+        path: '/'
+      },
       body: JSON.stringify({
         hello: 'world'
       }),
@@ -79,7 +85,9 @@ describe('express', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      path: '/',
+      requestContext: {
+        path: '/'
+      },
       queryStringParameters: {
         foo: 'bar'
       }
@@ -100,7 +108,9 @@ describe('express', () => {
 
     return request(app, {
       httpMethod: 'PUT',
-      path: '/',
+      requestContext: {
+        path: '/'
+      }
     })
     .then(response => {
       expect(response.statusCode).to.equal(201);
@@ -113,7 +123,9 @@ describe('express', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      path: '/file.txt',
+      requestContext: {
+        path: '/file.txt',
+      }
     })
     .then(response => {
       expect(response.statusCode).to.equal(200);
@@ -130,11 +142,11 @@ describe('express', () => {
 
       return request(app, {
         httpMethod: 'GET',
-        path: '/',
         headers: {
           authorization: 'Basic QWxhZGRpbjpPcGVuU2VzYW1l'
         },
         requestContext: {
+          path: '/',
           identity: {
             sourceIp: '1.3.3.7'
           }
@@ -153,11 +165,11 @@ describe('express', () => {
 
       return request(app, {
         httpMethod: 'GET',
-        path: '/',
         headers: {
           authorization: 'Basic QWxhZGRpbjpPcGVuU2VzYW1l'
         },
         requestContext: {
+          path: '/',
           identity: {
             sourceIp: '1.3.3.7'
           }
