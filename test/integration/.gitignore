@@ -1,0 +1,3 @@
+lib/
+serverless-http.js
+.serverless/

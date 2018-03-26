@@ -2,7 +2,14 @@ service: serverless-http-test
 
 provider:
   name: aws
+  runtime: nodejs6.10
 
 functions:
-  test:
-    handler: test.handler
+  express:
+    handler: express.handler
+    events:
+      - http: ANY /express
+  koa:
+    handler: koa.handler
+    events:
+      - http: ANY /koa
