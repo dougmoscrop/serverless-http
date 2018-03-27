@@ -180,4 +180,20 @@ describe('express', () => {
       });
     });
   });
+
+  it('address() returns a stubbed object', () => {
+    app.use(morgan('short'));
+    app.use((req, res) => {
+      console.log(req.connection);
+      res.status(200).send(req.connection.address());
+    });
+
+    return request(app, {
+      httpMethod: 'GET'
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(200);
+      expect(response.body).to.equal(JSON.stringify({ port: 443 }));
+    });
+  });
 });
