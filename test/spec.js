@@ -155,8 +155,8 @@ describe('spec', () => {
 
     handler(event, context, (err) => {
       expect(err).to.equal(null);
-      expect(request.event).to.equal(event);
-      expect(request.context).to.equal(context);
+      expect(request.event).to.deep.equal(event);
+      expect(request.context).to.deep.equal(context);
       done();
     });
   });
@@ -178,8 +178,8 @@ describe('spec', () => {
 
     handler(event, context, (err) => {
       expect(err).to.equal(null);
-      expect(response.event).to.equal(event);
-      expect(response.context).to.equal(context);
+      expect(response.event).to.deep.equal(event);
+      expect(response.context).to.deep.equal(context);
       done();
     });
   });
@@ -259,6 +259,27 @@ describe('spec', () => {
       expect(res).to.be.an('Object')
         .with.a.property('body', '{"foo":"bar"}');
       done();
+    });
+  });
+
+  it('tolerates a requestContext with a read-only path', (done) => {
+    const body = {foo:'bar'};
+    const headers = { 'content-type': 'application/json' };
+
+    const handler = serverless((req, res) => {
+      getStream(req).then(str => {
+        res.end(str);
+      });
+    });
+
+    const requestContext = {};
+
+    Object.defineProperty(requestContext, 'path', {
+      get: () => 'test'
+    });
+
+    handler({ body, headers, requestContext }, context, (err) => {
+      done(err);
     });
   });
 });
