@@ -7,7 +7,9 @@ const serverless = require('./serverless-http');
 const app = express();
 
 app.use(function (req, res) {
-  res.status(200).send('This is a test');
+  res.status(200).json({
+    url: req.url
+  });
 });
 
 module.exports.handler = serverless(app);

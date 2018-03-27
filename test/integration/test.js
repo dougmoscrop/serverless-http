@@ -51,12 +51,16 @@ run('deploy')
         return;
       }
 
+      console.log('response', r.statusCode, r.body);
+
       if (r.statusCode !== 200) {
         throw new Error('expected statusCode 200');
       }
 
-      if (r.body !== 'This is a test') {
-        throw new Error(`expected body 'This is a test'`);
+      const parsed = JSON.parse(r.body);
+
+      if (typeof parsed.url !== 'string') {
+        throw new Error(`expected body.url to be a string`);
       }
     });
   })
@@ -68,5 +72,5 @@ run('deploy')
     process.exitCode = 1;
   })
   .then(() => {
-    // return run('remove');
+    return run('remove');
   });
