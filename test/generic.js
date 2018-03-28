@@ -17,9 +17,7 @@ describe('generic http listener', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      requestContext: {
-        path: '/'
-      }
+      path: '/'
     })
     .then(response => {
       expect(response.statusCode).to.equal(418);
@@ -44,9 +42,6 @@ describe('generic http listener', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      requestContext: {
-        path: '/'
-      },
       body: 'hello, world'
     })
     .then(response => {
@@ -66,9 +61,6 @@ describe('generic http listener', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      requestContext: {
-        path: '/'
-      },
       queryStringParameters: {
         foo: 'bar'
       }
@@ -90,9 +82,7 @@ describe('generic http listener', () => {
 
     return request(app, {
       httpMethod: 'PUT',
-      requestContext: {
-        path: '/'
-      }
+      path: '/'
     })
     .then(response => {
       expect(response.statusCode).to.equal(200);
@@ -110,9 +100,7 @@ describe('generic http listener', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      requestContext: {
-        path: '/file.txt'
-      }
+      path: '/file.txt'
     })
     .then(response => {
       expect(response.statusCode).to.equal(200);
@@ -133,10 +121,7 @@ describe('generic http listener', () => {
     };
 
     return request(app, {
-      httpMethod: 'GET',
-      requestContext: {
-        path: '/'
-      }
+      httpMethod: 'GET'
     })
     .then(response => {
       expect(response.statusCode).to.equal(200);

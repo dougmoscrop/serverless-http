@@ -20,10 +20,7 @@ describe('express', () => {
     });
 
     return request(app, {
-      httpMethod: 'GET',
-      requestContext: {
-        path: '/'
-      }
+      httpMethod: 'GET'
     })
     .then(response => {
       expect(response.statusCode).to.equal(418);
@@ -39,9 +36,6 @@ describe('express', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      requestContext: {
-        path: '/'
-      },
       body: 'hello, world',
       headers: {
         'Content-Type': 'text/plain',
@@ -62,9 +56,6 @@ describe('express', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      requestContext: {
-        path: '/'
-      },
       body: JSON.stringify({
         hello: 'world'
       }),
@@ -85,9 +76,7 @@ describe('express', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      requestContext: {
-        path: '/'
-      },
+      path: '/',
       queryStringParameters: {
         foo: 'bar'
       }
@@ -107,10 +96,7 @@ describe('express', () => {
     });
 
     return request(app, {
-      httpMethod: 'PUT',
-      requestContext: {
-        path: '/'
-      }
+      httpMethod: 'PUT'
     })
     .then(response => {
       expect(response.statusCode).to.equal(201);
@@ -123,9 +109,7 @@ describe('express', () => {
 
     return request(app, {
       httpMethod: 'GET',
-      requestContext: {
-        path: '/file.txt',
-      }
+      path: '/file.txt'
     })
     .then(response => {
       expect(response.statusCode).to.equal(200);
@@ -145,8 +129,8 @@ describe('express', () => {
         headers: {
           authorization: 'Basic QWxhZGRpbjpPcGVuU2VzYW1l'
         },
+        path: '/',
         requestContext: {
-          path: '/',
           identity: {
             sourceIp: '1.3.3.7'
           }
@@ -169,7 +153,6 @@ describe('express', () => {
           authorization: 'Basic QWxhZGRpbjpPcGVuU2VzYW1l'
         },
         requestContext: {
-          path: '/',
           identity: {
             sourceIp: '1.3.3.7'
           }
