@@ -42,7 +42,7 @@ serverless(app, {
 
 // set the types yourself - just like BINARY_CONTENT_TYPES but using an array you pass in, rather than an environment varaible
 serverless(app, {
-  binary: ['application/json', 'image/png']
+  binary: ['application/json', 'image/*']
 });
 
 // your own custom callback
@@ -52,5 +52,3 @@ serverless(app, {
   }
 });
 ```
-
-Note that content types are compared explicitly - there's no `image/*` type wildcards.
