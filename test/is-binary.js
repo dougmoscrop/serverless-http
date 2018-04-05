@@ -14,9 +14,17 @@ describe('is-binary', function() {
     expect(result).to.be.true;
   });
 
-  it('handles wildcards', function() {
+  it('handles wildcard', function() {
     const result = isBinary({ ['content-type']: 'image/png' }, {
       binary: ['image/*']
+    });
+
+    expect(result).to.be.true;
+  });
+
+  it('handles double wildcard', function() {
+    const result = isBinary({ ['content-type']: 'application/json' }, {
+      binary: ['*/*']
     });
 
     expect(result).to.be.true;
