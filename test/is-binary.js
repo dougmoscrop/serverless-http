@@ -38,6 +38,14 @@ describe('is-binary', function() {
     expect(result).to.be.false;
   });
 
+  it('handles ; separater', function() {
+    const result = isBinary({ ['content-type']: 'application/json; foo=bar' }, {
+      binary: ['*/*']
+    });
+
+    expect(result).to.be.true;
+  });
+
   it('force to false', function() {
     const result = isBinary({}, {
       binary: false
