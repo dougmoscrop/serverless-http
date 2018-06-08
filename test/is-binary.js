@@ -14,6 +14,30 @@ describe('is-binary', function() {
     expect(result).to.be.true;
   });
 
+  it('handles wildcard', function() {
+    const result = isBinary({ ['content-type']: 'image/png' }, {
+      binary: ['image/*']
+    });
+
+    expect(result).to.be.true;
+  });
+
+  it('handles double wildcard', function() {
+    const result = isBinary({ ['content-type']: 'application/json' }, {
+      binary: ['*/*']
+    });
+
+    expect(result).to.be.true;
+  });
+
+  it('does not incorrectly handle wildcards', function() {
+    const result = isBinary({ ['content-type']: 'application/json' }, {
+      binary: ['image/*']
+    });
+
+    expect(result).to.be.false;
+  });
+
   it('force to false', function() {
     const result = isBinary({}, {
       binary: false
