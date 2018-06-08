@@ -7,8 +7,5 @@ env:
 extends:
   "eslint:recommended"
 
-ecmaFeatures:
-  generators: true
-
 rules:
   no-console: 0

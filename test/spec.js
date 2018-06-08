@@ -76,6 +76,7 @@ describe('spec', () => {
 
   it('should set default requestId', (done) => {
     let called;
+
     const handler = serverless((req, res) => {
       onHeaders(res, () => {
         called = req;
@@ -84,7 +85,7 @@ describe('spec', () => {
     });
 
     handler({ requestContext: { requestId: 'foo' } }, {}, () => {
-      expect(called).to.be.truthy;
+      expect(!!called).to.be.true;
       expect(called.headers['x-request-id']).to.eql('foo');
       done();
     });
@@ -100,7 +101,7 @@ describe('spec', () => {
     }, { requestId: 'Custom-Request-ID' });
 
     handler({ requestContext: { requestId: 'bar' } }, {}, () => {
-      expect(called).to.be.truthy;
+      expect(!!called).to.be.true;
       expect(called.headers['custom-request-id']).to.eql('bar');
       done();
     });
@@ -116,7 +117,7 @@ describe('spec', () => {
     }, { requestId: 'Custom-Request-ID' });
 
     handler({ headers: { 'custom-request-id': 'abc' }, requestContext: { requestId: 'bar' } }, {}, () => {
-      expect(called).to.be.truthy;
+      expect(!!called).to.be.true;
       expect(called.headers['custom-request-id']).to.eql('abc');
       done();
     });
@@ -132,7 +133,7 @@ describe('spec', () => {
     }, { requestId: false });
 
     handler({ requestContext: { requestId: 'bar' } }, {}, () => {
-      expect(called).to.be.truthy;
+      expect(!!called).to.be.true;
       expect(called.headers['x-request-id']).to.be.undefined;
       done();
     });
