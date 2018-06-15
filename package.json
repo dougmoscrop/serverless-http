@@ -1,6 +1,6 @@
 {
   "name": "serverless-http",
-  "version": "1.5.5",
+  "version": "1.6.0",
   "description": "Use koa or express/connect in AWS Lambda via API Gateway",
   "main": "serverless-http.js",
   "engines": {
@@ -35,6 +35,7 @@
   "author": "Doug Moscrop <doug.moscrop@gmail.com> (http://www.github.com/dougmoscrop)",
   "contributors": [
     "Doug Moscrop (https://github.com/dougmoscrop)",
+    "Kevin Groat (https://github.com/kgroat)",
     "Kurt Miller (https://github.com/bsdkurt)",
     "Roch Devost (https://github.com/rochdev)",
     "Bryan Gamble (https://github.com/bdgamble)",
