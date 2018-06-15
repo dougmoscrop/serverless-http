@@ -4,6 +4,17 @@ provider:
   name: aws
   runtime: nodejs6.10
 
+plugins:
+  - serverless-plugin-custom-binary
+
+custom:
+  apiGateway:
+    binaryMediaTypes:
+      - image/png
+
+package:
+  excludeDevDependencies: false
+
 functions:
   express:
     handler: express.handler
@@ -13,3 +24,10 @@ functions:
     handler: koa.handler
     events:
       - http: ANY /koa
+  binary:
+    handler: binary.handler
+    events:
+      - http:
+          path: /binary
+          method: ANY
+          contentHandling: CONVERT_TO_BINARY

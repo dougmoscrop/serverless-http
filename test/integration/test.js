@@ -2,9 +2,13 @@
 
 /* eslint-disable no-console */
 
+const { URL } = require('url');
+const path = require('path');
+const fs = require('fs');
+
 const Serverless = require('serverless')
 const intercept = require('intercept-stdout');
-const got = require('got');
+const supertest = require('supertest');
 
 function run(cmd) {
   // hack argv so serverless runs a command
@@ -25,44 +29,79 @@ function run(cmd) {
     });
 }
 
-run('deploy')
+function getEndpoints(info) {
+  return info.reduce((memo, msg) => {
+    if (msg.indexOf('endpoints') !== -1) {
+      msg.split('\n').slice(1).map(txt => {
+        if (txt) {
+          const endpoint = txt.replace('  ANY - ', '');
+          const url = new URL(endpoint);
+          memo.push(url);
+        }
+      });
+    }
+  return memo;
+  }, []);
+}
+
+const tests = {
+  '/dev/express': url => {
+    return supertest(url.origin)
+      .get(url.pathname)
+      .expect(200)
+      .expect('Content-Type', /json/);
+  },
+  '/dev/koa': url => {
+    return supertest(url.origin)
+      .get(url.pathname)
+      .expect(200)
+      .expect('Content-Type', /json/);
+  },
+  '/dev/binary': url => {
+    const imagePath = path.join(__dirname, 'image.png');
+    const expected = fs.readFileSync(imagePath);
+
+    return supertest(url.origin)
+      .get(url.pathname)
+      .set('Accept', 'image/png') // if this is image/*, APIg will not match :(
+      .expect(200)
+      .expect('Content-Type', /png/)
+      .then(response => {
+        if (Buffer.isBuffer(response.body)) {
+          if (response.body.equals(expected)) {
+            return;
+          }
+        }
+
+        throw new Error('Binary response body was not a buffer or not equal to the expected image');
+      });
+  }
+};
+
+Promise.resolve()
+  .then(() => {
+    return run('deploy');
+  })
   .then(() => {
     return run('info');
   })
   .then(info => {
-    return info.reduce((memo, msg) => {
-      if (msg.indexOf('endpoints') !== -1) {
-        return memo.then(() => {
-          return Promise.all(msg.split('\n').slice(1).map(e => {
-            if (e) {
-              const url = e.replace('  ANY - ', '');
-              console.log('get', url);
-              return got.get(url);
-            }
-          }));
-        });
-      }
-      return memo;
-    }, Promise.resolve());
+    return getEndpoints(info);
   })
-  .then(responses => {
-    return responses.map(r => {
-      if (!r) {
-        return;
-      }
+  .then(endpoints => {
+    return Promise.all(
+      Object.keys(tests).map(path => {
+        const check = tests[path];
+        const endpoint = endpoints.find(e => e.pathname === path);
 
-      console.log('response', r.statusCode, r.body);
-
-      if (r.statusCode !== 200) {
-        throw new Error('expected statusCode 200');
-      }
-
-      const parsed = JSON.parse(r.body);
-
-      if (typeof parsed.url !== 'string') {
-        throw new Error(`expected body.url to be a string`);
-      }
-    });
+        if (endpoint) {
+          console.log('Testing', path);
+          return check(endpoint);
+        } else {
+          throw new Error('Missing endpoint for', path);
+        }
+      })
+    )
   })
   .then(() => {
     console.log('Test succeded!');
