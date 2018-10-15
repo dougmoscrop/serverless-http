@@ -4,7 +4,7 @@ const koa = require('koa'),
   route = require('koa-route'),
   compress = require('koa-compress'),
   bodyparser = require('koa-bodyparser'),
-  serve = require('koa-serve'),
+  serve = require('koa-static'),
   Router = require('koa-router'),
   expect = require('chai').expect,
   zlib = require('zlib'),
@@ -328,16 +328,16 @@ it('auth middleware should set statusCode 401', () => {
     });
   });
 
-  describe('koa-serve', () => {
+  describe('koa-static', () => {
 
     beforeEach(() => {
-      app.use(serve('test'));
+      app.use(serve(__dirname));
     });
 
     it('should serve a text file', () => {
       return request(app, {
         httpMethod: 'GET',
-        path: '/test/file.txt'
+        path: 'file.txt'
       })
       .then((response) => {
         expect(response.body).to.equal('this is a test\n');
