@@ -14,7 +14,7 @@ const defaultOptions = {
   requestId: 'x-request-id'
 };
 
-module.exports = function(app, opts) {
+module.exports = function (app, opts) {
   const handler = getHandler(app);
   const options = Object.assign({}, defaultOptions, opts);
 
@@ -22,41 +22,45 @@ module.exports = function(app, opts) {
 
     ctx.callbackWaitsForEmptyEventLoop = !!options.callbackWaitsForEmptyEventLoop;
 
-    Promise.resolve()
-      .then(() => {
-        const context = ctx || {};
-        const event = cleanUpEvent(evt);
+    return new Promise((resolve, reject) => {
+      Promise.resolve()
+        .then(() => {
+          const context = ctx || {};
+          const event = cleanUpEvent(evt);
 
-        const request = new Request(event, options);
+          const request = new Request(event, options);
 
-        return finish(request, event, context, options.request)
-          .then(() => {
-            const response = new Response(request);
+          return finish(request, event, context, options.request)
+            .then(() => {
+              const response = new Response(request);
 
-            handler(request, response);
+              handler(request, response);
 
-            return finish(response, event, context, options.response);
+              return finish(response, event, context, options.response);
+            });
+        })
+        .then(res => {
+          process.nextTick(() => {
+            const statusCode = res.statusCode;
+            const headers = sanitizeHeaders(res._headers);
+            const isBase64Encoded = isBinary(headers, options);
+            const body = getBody(res, isBase64Encoded);
+
+            const result = {
+              isBase64Encoded,
+              statusCode,
+              headers,
+              body
+            };
+
+            callback ? callback(null, result) : resolve(result)
           });
-    })
-    .then(res => {
-      process.nextTick(() => {
-        const statusCode = res.statusCode;
-        const headers = sanitizeHeaders(res._headers);
-        const isBase64Encoded = isBinary(headers, options);
-        const body = getBody(res, isBase64Encoded);
-
-        callback(null, {
-          isBase64Encoded,
-          statusCode,
-          headers,
-          body
+        })
+        .catch(e => {
+          process.nextTick(() => {
+            callback ? callback(e) : reject(e)
+          });
         });
-      });
     })
-    .catch(e => {
-      process.nextTick(() => {
-        callback(e);
-      });
-    });
   };
 };

@@ -31,6 +31,38 @@ app.use(/* ... */);
 module.exports.handler = serverless(app);
 ```
 
+If `handler` or `app` is `Promise` pattern, You can omit `callback`. - 
+Example(is based `async/await`):
+```javascript
+const serverless = require('serverless-http');
+const express = require('./express');
+
+// construct your app as normal
+const app = express();
+// register your middleware as normal
+app.use(/* ... */);
+
+// this is it!
+module.exports.handler = async (event, context) => serverless(app);
+```
+```javascript
+const serverless = require('serverless-http');
+const express = require('./express');
+
+async function getApp() {
+  // construct your app as normal
+  const app = express();
+  // register your middleware as normal
+  app.use(/* ... */);
+  return app;
+}
+
+// this is it!
+module.exports.handler = async (event, context) => serverless(await getApp());
+```
+
+
+
 ## Request/Response Transforms
 
 You can transform the request before it goes through your app.
