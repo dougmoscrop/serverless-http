@@ -22,45 +22,51 @@ module.exports = function (app, opts) {
 
     ctx.callbackWaitsForEmptyEventLoop = !!options.callbackWaitsForEmptyEventLoop;
 
-    return new Promise((resolve, reject) => {
-      Promise.resolve()
-        .then(() => {
-          const context = ctx || {};
-          const event = cleanUpEvent(evt);
+    return Promise.resolve()
+      .then(() => {
+        const context = ctx || {};
+        const event = cleanUpEvent(evt);
 
-          const request = new Request(event, options);
+        const request = new Request(event, options);
 
-          return finish(request, event, context, options.request)
-            .then(() => {
-              const response = new Response(request);
+        return finish(request, event, context, options.request)
+          .then(() => {
+            const response = new Response(request);
 
-              handler(request, response);
+            handler(request, response);
 
-              return finish(response, event, context, options.response);
-            });
-        })
-        .then(res => {
-          process.nextTick(() => {
-            const statusCode = res.statusCode;
-            const headers = sanitizeHeaders(res._headers);
-            const isBase64Encoded = isBinary(headers, options);
-            const body = getBody(res, isBase64Encoded);
-
-            const result = {
-              isBase64Encoded,
-              statusCode,
-              headers,
-              body
-            };
-
-            callback ? callback(null, result) : resolve(result)
+            return finish(response, event, context, options.response);
           });
-        })
-        .catch(e => {
+      })
+      .then(res => {
+        const statusCode = res.statusCode;
+        const headers = sanitizeHeaders(res._headers);
+        const isBase64Encoded = isBinary(headers, options);
+        const body = getBody(res, isBase64Encoded);
+
+        const result = {
+          isBase64Encoded,
+          statusCode,
+          headers,
+          body
+        };
+
+        if (callback) {
           process.nextTick(() => {
-            callback ? callback(e) : reject(e)
+            callback(null, result);
           });
-        });
-    })
+        } else {
+          return result;
+        }
+      })
+      .catch(e => {
+        if (callback) {
+          process.nextTick(() => {
+            callback(e);
+          });
+        } else {
+          throw e;
+        }
+      });
   };
 };

@@ -262,4 +262,36 @@ describe('spec', () => {
       done();
     });
   });
+
+  it('should support returning a promise and not need a callback', () => {
+    const event = {}
+    const context = {}
+
+    const handler = serverless((req, res) => {
+      res.end('');
+    });
+
+    return handler(event, context)
+      .then(res => {
+        expect(res).to.have.property('statusCode', 200);
+      });
+  });
+
+  it('should support returning a promise that rejects and not need a callback', () => {
+    const event = {}
+    const context = {}
+
+    const handler = serverless(() => {
+      throw new Error('test');
+    });
+
+    return handler(event, context)
+      .then(() => {
+        throw new Error('Should not reach here');
+      })
+      .catch(err => {
+        expect(err).to.have.property('message', 'test');
+      });
+  });
+
 });
