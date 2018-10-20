@@ -1,5 +1,7 @@
 # Examples
 
+## Note: AWS
+
 `serverless-http` relies on AWS Lambda Proxy Integration and you can use wildcards in the path binding to delegate routing logic to your application rather than API Gateway.
 
 The examples below are using the serverless framework (serverless.yml) but the path rules you see would be the same if you set it up manually in the AWS console or via CloudFormation, etc.
