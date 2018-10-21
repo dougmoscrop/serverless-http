@@ -32,8 +32,11 @@ app.use(/* register your middleware as normal */);
 
 // this is it!
 module.exports.handler = serverless(app);
-// or with a promise
-module.exports.handler = async (event, context) => serverless(app);
+// or as a promise
+const handler = serverless(app);
+module.exports.handler = async (event, context) => {
+  return await handler(event, context);
+};
 ```
 
 ## Limitations
