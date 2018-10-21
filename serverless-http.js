@@ -3,7 +3,6 @@
 const finish = require('./lib/finish');
 const getHandler = require('./lib/get-handler');
 const cleanUpEvent = require('./lib/clean-up-event');
-const sanitizeHeaders = require('./lib/sanitize-headers');
 const getBody = require('./lib/get-body');
 const isBinary = require('./lib/is-binary');
 
@@ -40,9 +39,9 @@ module.exports = function (app, opts) {
       })
       .then(res => {
         const statusCode = res.statusCode;
-        const headers = sanitizeHeaders(res._headers);
+        const headers = Response.headers(res);
         const isBase64Encoded = isBinary(headers, options);
-        const body = getBody(res, isBase64Encoded);
+        const body = getBody(res, headers, isBase64Encoded);
 
         const result = {
           isBase64Encoded,

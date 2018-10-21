@@ -6,11 +6,11 @@ const expect = require('chai').expect;
 describe('get-body', function() {
 
   it('throws on chunked transfer-encoding', () => {
-    expect(() => getBody({ _headers: {'transfer-encoding': 'chunked' } })).to.throw(Error, 'chunked encoding not supported');
+    expect(() => getBody({}, {'transfer-encoding': 'chunked' })).to.throw(Error, 'chunked encoding not supported');
   });
 
   it('throws on res.chunkedEncoding', () => {
-    expect(() => getBody({ _headers: {}, chunkedEncoding: true })).to.throw(Error, 'chunked encoding not supported');
+    expect(() => getBody({ chunkedEncoding: true }, {})).to.throw(Error, 'chunked encoding not supported');
   });
 
 });

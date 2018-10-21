@@ -15,7 +15,6 @@ describe('express', () => {
 
   it('basic middleware should set statusCode and default body', () => {
     app.use(function (req, res) {
-      console.log('in mw');
       res.status(418).send(`I'm a teapot`);
     });
 
@@ -167,7 +166,6 @@ describe('express', () => {
   it('address() returns a stubbed object', () => {
     app.use(morgan('short'));
     app.use((req, res) => {
-      console.log(req.connection);
       res.status(200).send(req.connection.address());
     });
 

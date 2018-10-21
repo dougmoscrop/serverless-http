@@ -163,24 +163,24 @@ describe('spec', () => {
   });
 
   it('should support transforming the response', (done) => {
-    let response;
     const event = {}
     const context = {}
 
     const handler = serverless((req, res) => {
-      response = res;
       res.end('');
     }, {
-      response: (res, evt, ctx) => {
-        res.event = evt;
-        res.context = ctx;
+      response: (res) => {
+        res.statusCode = 201;
+        res.headers['foo'] = 'bar';
+        res.setHeader('bar', 'baz');
       }
     });
 
-    handler(event, context, (err) => {
+    handler(event, context, (err, obj) => {
       expect(err).to.equal(null);
-      expect(response.event).to.equal(event);
-      expect(response.context).to.equal(context);
+      expect(obj.statusCode).to.equal(201);
+      expect(obj.headers).to.have.property('foo', 'bar');
+      expect(obj.headers).to.have.property('bar', 'baz');
       done();
     });
   });
