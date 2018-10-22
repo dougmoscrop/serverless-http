@@ -5,6 +5,7 @@ const getHandler = require('./lib/get-handler');
 const cleanUpEvent = require('./lib/clean-up-event');
 const getBody = require('./lib/get-body');
 const isBinary = require('./lib/is-binary');
+const dispatch = require('./lib/dispatch');
 
 const Request = require('./lib/request');
 const Response = require('./lib/response');
@@ -21,7 +22,7 @@ module.exports = function (app, opts) {
 
     ctx.callbackWaitsForEmptyEventLoop = !!options.callbackWaitsForEmptyEventLoop;
 
-    return Promise.resolve()
+    const promise = Promise.resolve()
       .then(() => {
         const context = ctx || {};
         const event = cleanUpEvent(evt);
@@ -43,29 +44,14 @@ module.exports = function (app, opts) {
         const isBase64Encoded = isBinary(headers, options);
         const body = getBody(res, headers, isBase64Encoded);
 
-        const result = {
+        return {
           isBase64Encoded,
           statusCode,
           headers,
           body
         };
-
-        if (callback) {
-          process.nextTick(() => {
-            callback(null, result);
-          });
-        } else {
-          return result;
-        }
-      })
-      .catch(e => {
-        if (callback) {
-          process.nextTick(() => {
-            callback(e);
-          });
-        } else {
-          throw e;
-        }
       });
+
+    return dispatch(promise, callback);
   };
 };

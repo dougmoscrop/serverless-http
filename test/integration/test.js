@@ -78,38 +78,43 @@ const tests = {
   }
 };
 
-Promise.resolve()
-  .then(() => {
-    return run('deploy');
-  })
-  .then(() => {
-    return run('info');
-  })
-  .then(info => {
-    return getEndpoints(info);
-  })
-  .then(endpoints => {
-    return Promise.all(
-      Object.keys(tests).map(path => {
-        const check = tests[path];
-        const endpoint = endpoints.find(e => e.pathname === path);
+['nodejs6.10', 'nodejs8.10'].reduce((memo, runtime) => {
+  return memo
+    .then(() => {
+      console.log('Testing runtime', runtime);
+      process.env.RUNTIME = runtime;
+      return run('deploy')
+        .then(() => {
+          return run('info');
+        })
+        .then(info => {
+          return getEndpoints(info);
+        })
+        .then(endpoints => {
+          return Promise.all(
+            Object.keys(tests).map(path => {
+              const check = tests[path];
+              const endpoint = endpoints.find(e => e.pathname === path);
 
-        if (endpoint) {
-          console.log('Testing', path);
-          return check(endpoint);
-        } else {
-          throw new Error('Missing endpoint for', path);
-        }
-      })
-    )
-  })
-  .then(() => {
-    console.log('Test succeded!');
-  })
-  .catch(e => {
-    console.error('Test failed: ', e, e.stackTrace);
-    process.exitCode = 1;
-  })
-  .then(() => {
-    return run('remove');
-  });
+              if (endpoint) {
+                console.log('Testing', path);
+                return check(endpoint);
+              } else {
+                throw new Error('Missing endpoint for', path);
+              }
+            })
+          )
+        })
+        .then(() => {
+          console.log('Test succeded!');
+        })
+        .catch(e => {
+          console.error('Test failed: ', e, e.stackTrace);
+          process.exitCode = 1;
+        })
+        .then(() => {
+          return run('remove');
+        });
+
+    });
+}, Promise.resolve());

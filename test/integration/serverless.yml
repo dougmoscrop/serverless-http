@@ -2,7 +2,7 @@ service: serverless-http-test
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: ${env:RUNTIME}
 
 plugins:
   - serverless-plugin-custom-binary

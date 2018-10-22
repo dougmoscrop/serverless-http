@@ -294,4 +294,18 @@ describe('spec', () => {
       });
   });
 
+  it('should not return anything when given a callback', () => {
+    const event = {}
+    const context = {}
+
+    const handler = serverless((req, res) => {
+      res.end('test');
+    });
+
+    const r = handler(event, context, (err) => {
+      expect(err).to.be.null;
+      expect(r).to.be.undefined;
+    });
+  });
+
 });
