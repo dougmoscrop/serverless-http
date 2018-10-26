@@ -14,7 +14,7 @@ const defaultOptions = {
   requestId: 'x-request-id'
 };
 
-module.exports = function (app, opts) {
+module.exports = function (app, opts = {}) {
   const handler = getHandler(app);
   const options = Object.assign({}, defaultOptions, opts);
 

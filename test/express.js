@@ -177,4 +177,22 @@ describe('express', () => {
       expect(response.body).to.equal(JSON.stringify({ port: 443 }));
     });
   });
+
+  it('sets originalUrl', () => {
+    app.use((req, res) => {
+      res.status(200).send(req.originalUrl);
+    });
+
+    return request(app, {
+      httpMethod: 'GET',
+      path: '/bar',
+      requestContext: {
+        path: '/foo/bar'
+      }
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(200);
+      expect(response.body).to.equal('/foo/bar');
+    });
+  });
 });
