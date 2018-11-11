@@ -13,6 +13,7 @@ This module allows you to 'wrap' your API for serverless use. No HTTP server, no
 * Connect
 * Express
 * Koa
+* Restana
 * Sails (experimental)
 * Hapi (experimental)
 
@@ -20,7 +21,7 @@ This module allows you to 'wrap' your API for serverless use. No HTTP server, no
 
 * AWS
 
-## Usage
+## Usage example using the Koa framework
 
 ```javascript
 const serverless = require('serverless-http');
@@ -32,6 +33,7 @@ app.use(/* register your middleware as normal */);
 
 // this is it!
 module.exports.handler = serverless(app);
+
 // or as a promise
 const handler = serverless(app);
 module.exports.handler = async (event, context) => {
