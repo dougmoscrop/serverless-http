@@ -51,6 +51,27 @@ describe('koa', () => {
     });
   });
 
+  it('basic middleware should receive multi-value queryString', () => {
+    app.use(function* (next) {
+      this.body = this.query.x;
+      yield* next;
+    });
+
+    return request(app, {
+      httpMethod: 'GET',
+      path: '/',
+      queryStringParameters: {
+        x: 'y'
+      },
+      multiValueQueryStringParameters: {
+        x: ['z', 'y']
+      }
+    })
+    .then(response => {
+      expect(response.body).to.equal('["z","y"]');
+    });
+  });
+
 
   it('basic middleware should set statusCode and custom body', () => {
     app.use(function* (next) {
