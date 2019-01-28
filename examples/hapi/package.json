@@ -1,0 +1,24 @@
+{
+  "name": "serverless-http-hapi-example",
+  "version": "1.0.0",
+  "description": "How to use serverless-http with hapi.js",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "npx standard --fix && npx standard",
+    "test": "npm run lint",
+    "start": "node ./src",
+    "predeploy": "npm test",
+    "deploy": "npx serverless deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "hapi": "^18.0.0",
+    "serverless-http": "^1.9.0"
+  },
+  "devDependencies": {
+    "serverless": "^1.36.3",
+    "standard": "^12.0.1"
+  }
+}

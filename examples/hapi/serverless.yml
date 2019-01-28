@@ -1,0 +1,32 @@
+
+service: serverless-http-hapi-example
+frameWorkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: eu-central-1
+  stage: ${opt:stage, 'dev'}
+  memorySize: 512
+  apiKeys:
+    - ${self:custom.prefix}-admin-panel
+  environment:
+    NODE_ENV: ${self:provider.stage}
+
+custom:
+  prefix: ${self:provider.stage}-${self:service}
+
+functions:
+  api:
+    handler: src/index.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+          private: true
+      - http:
+          path: /{any+}
+          method: ANY
+          cors: true
+          private: true
