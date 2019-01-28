@@ -23,7 +23,7 @@ This module allows you to 'wrap' your API for serverless use. No HTTP server, no
 
 ## Examples
 
-Please check the examples folder!
+Please check the `examples` folder!
 
 ### Usage example using the Koa framework
 
