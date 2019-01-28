@@ -4,10 +4,10 @@ module.exports = [
     method: 'GET',
     path: '/',
     handler: (request, h) => {
-      return {
+      return h.response({
         msg: 'Hello, world!',
         serverless: request.serverless
-      }
+      })
     }
   }
 ]

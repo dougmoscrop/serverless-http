@@ -2,7 +2,7 @@
 const serverlessPlugin = {
   name: 'Serverless Plugin',
   version: '1.0.0',
-  register: async (server, options) => {
+  register: async (server) => {
     server.ext('onRequest', (request, h) => {
       try {
         request.serverless = request.raw.req.serverless
