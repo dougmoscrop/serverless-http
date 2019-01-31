@@ -8,7 +8,7 @@ describe('fastify', () => {
   let app;
   let handle;
 
-  const serverFactory = (handler, opts) => {
+  const serverFactory = (handler) => {
     handle = handler;
     return http.createServer(handler);
   };
