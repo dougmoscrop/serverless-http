@@ -51,7 +51,10 @@ module.exports = function (app, opts = {}) {
           body
         };
       });
-
-    return dispatch(promise, callback);
+    if(ctx.succeed) {
+      return dispatch(promise, ctx.succeed)
+    } else {
+      return dispatch(promise, callback);
+    }
   };
 };
