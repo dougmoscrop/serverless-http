@@ -47,6 +47,7 @@
   "homepage": "https://github.com/dougmoscrop/serverless-http",
   "license": "MIT",
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.15",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "eslint": "^5.7.0",
@@ -72,7 +73,8 @@
     "reflect-metadata": "^0.1.12",
     "restana": "^2.3.0",
     "sails": "^1.0.2",
-    "sinon": "^7.0.0"
+    "sinon": "^7.0.0",
+    "typescript": "^3.2.2"
   },
   "dependencies": {}
 }
