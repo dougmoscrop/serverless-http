@@ -14,9 +14,12 @@ This module allows you to 'wrap' your API for serverless use. No HTTP server, no
 * Express
 * Koa
 * Restana
-* Sails (experimental)
-* Hapi (experimental)
-* Fastify (experimental)
+* Sails *
+* Hapi *
+* Fastify *
+* Restify *
+
+(* Experimental)
 
 ### Supported Providers
 
