@@ -152,7 +152,7 @@ describe('generic http listener', () => {
       expect(response.headers).to.deep.equal({
         allow: 'GET, HEAD',
         'Set-cookie': 'bar=baz',
-        'content-length': 15,
+        'content-length': '15',
         'content-type': 'text/plain',
         'set-cookie': 'foo=bar'
       });
