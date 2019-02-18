@@ -41,6 +41,7 @@ module.exports = function (app, opts = {}) {
       .then(res => {
         const statusCode = res.statusCode;
         const headers = Response.headers(res);
+        headers['content-length'] = String(headers['content-length']);
         const isBase64Encoded = isBinary(headers, options);
         const body = getBody(res, headers, isBase64Encoded);
 
