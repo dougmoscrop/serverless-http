@@ -14,14 +14,22 @@ This module allows you to 'wrap' your API for serverless use. No HTTP server, no
 * Express
 * Koa
 * Restana
-* Sails (experimental)
-* Hapi (experimental)
+* Sails *
+* Hapi *
+* Fastify *
+* Restify *
+
+(* Experimental)
 
 ### Supported Providers
 
 * AWS
 
-## Usage example using the Koa framework
+## Examples
+
+Please check the `examples` folder!
+
+### Usage example using the Koa framework
 
 ```javascript
 const serverless = require('serverless-http');

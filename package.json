@@ -1,6 +1,6 @@
 {
   "name": "serverless-http",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "Use existing web application frameworks in serverless environments",
   "main": "serverless-http.js",
   "engines": {
@@ -53,6 +53,7 @@
     "eslint": "^5.7.0",
     "eslint-plugin-mocha": "^5.2.0",
     "express": "^4.16.4",
+    "fastify": "^2.0.0-rc.4",
     "get-stream": "^4.0.0",
     "hapi": "^17.6.0",
     "inversify": "^5.0.1",

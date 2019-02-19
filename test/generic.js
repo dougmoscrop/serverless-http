@@ -71,6 +71,30 @@ describe('generic http listener', () => {
     });
   });
 
+  it('should get multi-value query params', () => {
+    app = function (req, res) {
+      const urlObject = url.parse(req.url);
+
+      res.statusCode = 200;
+      res.write(urlObject.query);
+      res.end();
+    };
+
+    return request(app, {
+      httpMethod: 'GET',
+      queryStringParameters: {
+        foo: 'bar'
+      },
+      multiValueQueryStringParameters: {
+        foo: ['qux', 'bar']
+      }
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(200);
+      expect(response.body).to.equal('foo=qux&foo=bar');
+    });
+  });
+
   it('should match verbs', () => {
     app = function (req, res) {
       if (req.method === 'PUT') {
@@ -128,7 +152,7 @@ describe('generic http listener', () => {
       expect(response.headers).to.deep.equal({
         allow: 'GET, HEAD',
         'Set-cookie': 'bar=baz',
-        'content-length': 15,
+        'content-length': '15',
         'content-type': 'text/plain',
         'set-cookie': 'foo=bar'
       });
