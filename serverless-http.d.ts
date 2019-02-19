@@ -1,5 +1,4 @@
-import { Context, Callback } from "aws-lambda";
-
+/// <reference types="aws-lambda" />
 declare namespace ServerlessHttp {
     type FrameworkApplication = {
         handle: Function;
@@ -11,7 +10,11 @@ declare namespace ServerlessHttp {
         }
     }
     type HandlerCompatibleApp = Function | Partial<FrameworkApplication>;
-    type LambdaPartial = (event: any, context: Context, callback?: Callback) => void;
+    type LambdaPartial = (
+        event: any,
+        context: AWSLambda.Context,
+        callback?: AWSLambda.Callback
+    ) => void;
 }
 
 declare function serverlessHttp(
