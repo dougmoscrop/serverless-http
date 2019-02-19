@@ -1,4 +1,5 @@
 /// <reference types="aws-lambda" />
+
 declare namespace ServerlessHttp {
     type FrameworkApplication = {
         handle: Function;
