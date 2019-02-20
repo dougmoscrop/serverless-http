@@ -14,6 +14,7 @@
     "url": "https://github.com/dougmoscrop/serverless-http"
   },
   "scripts": {
+    "pretest": "tsc --noEmit test/typecheck.ts",
     "test": "nyc mocha",
     "posttest": "eslint .",
     "postpublish": "git push origin master --tags"
@@ -46,8 +47,10 @@
   ],
   "homepage": "https://github.com/dougmoscrop/serverless-http",
   "license": "MIT",
+  "optionalDependencies": {
+    "@types/aws-lambda": "^8.10.19"
+  },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.15",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "eslint": "^5.7.0",
