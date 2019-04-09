@@ -23,4 +23,4 @@ declare function serverlessHttp(
     opts?: any
 ): ServerlessHttp.LambdaPartial;
 
-export default serverlessHttp;
+export = serverlessHttp;
