@@ -2,6 +2,7 @@
 
 declare namespace ServerlessHttp {
     type FrameworkApplication = {
+        callback: Function;
         handle: Function;
         router: {
             route: Function;
