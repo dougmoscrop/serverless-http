@@ -51,6 +51,7 @@
     "@types/aws-lambda": "^8.10.19"
   },
   "devDependencies": {
+    "@types/koa": "^2.0.48",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "eslint": "^5.7.0",
