@@ -1,21 +1,13 @@
 'use strict';
-const http = require('http')
-const Fastify = require('fastify'),
+const fastify = require('fastify'),
   expect = require('chai').expect,
   request = require('./util/request');
 
 describe('fastify', () => {
   let app;
-  let handle;
-
-  const serverFactory = (handler) => {
-    handle = handler;
-    return http.createServer(handler);
-  };
 
   beforeEach(function() {
-    app = Fastify({ serverFactory });
-    app.handle = handle;
+    app = fastify();
   });
 
   it('basic hello world', () => {
