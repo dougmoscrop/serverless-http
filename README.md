@@ -48,7 +48,7 @@ module.exports.handler = async (event, context) => {
   return await handler(event, context);
 };
 ```
-### Other examples 
+### Other examples
 [json-server-less-λ](https://github.com/pharindoko/json-server-less-lambda) - using serverless-http with json-server and serverless framework in AWS
 
 
