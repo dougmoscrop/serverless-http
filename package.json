@@ -57,7 +57,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-mocha": "^5.3.0",
     "express": "^4.16.4",
-    "fastify": "^2.0.0-rc.4",
+    "fastify": "^2.2.0",
     "get-stream": "^5.1.0",
     "hapi": "^17.6.0",
     "inversify": "^5.0.1",
