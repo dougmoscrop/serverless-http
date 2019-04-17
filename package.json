@@ -59,7 +59,7 @@
     "express": "^4.16.4",
     "fastify": "^2.2.0",
     "get-stream": "^5.1.0",
-    "hapi": "^17.6.0",
+    "hapi": "^18.1.0",
     "inversify": "^5.0.1",
     "inversify-express-utils": "^6.2.0",
     "istanbul": "^0.4.5",
