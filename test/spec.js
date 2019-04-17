@@ -1,18 +1,23 @@
 'use strict';
 
+const getStream = require('get-stream');
 const onHeaders = require('on-headers');
 const onFinished = require('on-finished');
-const getStream = require('get-stream');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 
-const serverless = require('../serverless-http'),
-  expect = require('chai').expect;
+chai.use(chaiAsPromised);
+
+const { expect } = chai;
+
+const serverless = require('../serverless-http');
 
 describe('spec', () => {
   it('should throw when a non express/koa style object is passed', () => {
     expect(() => serverless({})).to.throw(Error);
   });
 
-  it('should set a default event', (done) => {
+  it('should set a default event', async () => {
     let request;
 
     const handler = serverless((req, res) => {
@@ -20,16 +25,11 @@ describe('spec', () => {
       res.end('');
     });
 
-    handler(null, {}, (err) => {
-      expect(err).to.equal(null);
-      expect(request.method).to.equal('GET');
-      expect(request.url).to.equal('/');
-      done();
-    });
-
+    await expect(handler(null)).to.be.fulfilled;
+    expect(request).to.be.an('Object');
   });
 
-  it('should trigger on-headers for res', (done) => {
+  it('should trigger on-headers for res', async () => {
     let called = false;
     const handler = serverless((req, res) => {
       onHeaders(res, () => {
@@ -38,13 +38,11 @@ describe('spec', () => {
       res.end('');
     });
 
-    handler(null, {}, () => {
-      expect(called).to.be.true;
-      done();
-    });
+    await expect(handler(null)).to.be.fulfilled;
+    expect(called).to.be.true;
   });
 
-  it('should trigger on-finished for res', (done) => {
+  it('should trigger on-finished for res', async () => {
     let called = false;
     const handler = serverless((req, res) => {
       onFinished(res, () => {
@@ -53,13 +51,11 @@ describe('spec', () => {
       res.end('');
     });
 
-    handler(null, {}, () => {
-      expect(called).to.be.true;
-      done();
-    });
+    await expect(handler(null)).to.be.fulfilled;
+    expect(called).to.be.true;
   });
 
-  it('should trigger on-finished for req', (done) => {
+  it('should trigger on-finished for req', async () => {
     let called = false;
     const handler = serverless((req, res) => {
       onFinished(req, () => {
@@ -68,13 +64,11 @@ describe('spec', () => {
       });
     });
 
-    handler(null, {}, () => {
-      expect(called).to.be.true;
-      done();
-    });
+    await expect(handler(null)).to.be.fulfilled;
+    expect(called).to.be.true;
   });
 
-  it('should set default requestId', (done) => {
+  it('should set default requestId', async () => {
     let called;
 
     const handler = serverless((req, res) => {
@@ -84,14 +78,12 @@ describe('spec', () => {
       res.end('');
     });
 
-    handler({ requestContext: { requestId: 'foo' } }, {}, () => {
-      expect(!!called).to.be.true;
-      expect(called.headers['x-request-id']).to.eql('foo');
-      done();
-    });
+    await handler({ requestContext: { requestId: 'foo' } });
+    expect(!!called).to.be.true;
+    expect(called.headers['x-request-id']).to.eql('foo');
   });
 
-  it('should set custom requestId', (done) => {
+  it('should set custom requestId', async () => {
     let called;
     const handler = serverless((req, res) => {
       onHeaders(res, () => {
@@ -100,14 +92,12 @@ describe('spec', () => {
       res.end('');
     }, { requestId: 'Custom-Request-ID' });
 
-    handler({ requestContext: { requestId: 'bar' } }, {}, () => {
-      expect(!!called).to.be.true;
-      expect(called.headers['custom-request-id']).to.eql('bar');
-      done();
-    });
+    await handler({ requestContext: { requestId: 'bar' } });
+    expect(!!called).to.be.true;
+    expect(called.headers['custom-request-id']).to.eql('bar');
   });
 
-  it('should keep existing requestId', (done) => {
+  it('should keep existing requestId', async () => {
     let called;
     const handler = serverless((req, res) => {
       onHeaders(res, () => {
@@ -116,14 +106,12 @@ describe('spec', () => {
       res.end('');
     }, { requestId: 'Custom-Request-ID' });
 
-    handler({ headers: { 'custom-request-id': 'abc' }, requestContext: { requestId: 'bar' } }, {}, () => {
-      expect(!!called).to.be.true;
-      expect(called.headers['custom-request-id']).to.eql('abc');
-      done();
-    });
+    await handler({ headers: { 'custom-request-id': 'abc' }, requestContext: { requestId: 'bar' } });
+    expect(!!called).to.be.true;
+    expect(called.headers['custom-request-id']).to.eql('abc');
   });
 
-  it('should not set request id when disabled', (done) => {
+  it('should not set request id when disabled', async () => {
     let called;
     const handler = serverless((req, res) => {
       onHeaders(res, () => {
@@ -132,14 +120,12 @@ describe('spec', () => {
       res.end('');
     }, { requestId: false });
 
-    handler({ requestContext: { requestId: 'bar' } }, {}, () => {
-      expect(!!called).to.be.true;
-      expect(called.headers['x-request-id']).to.be.undefined;
-      done();
-    });
+    await handler({ requestContext: { requestId: 'bar' } });
+    expect(!!called).to.be.true;
+    expect(called.headers['x-request-id']).to.be.undefined;
   });
 
-  it('should support transforming the request', (done) => {
+  it('should support transforming the request', async () => {
     let request;
     const event = {}
     const context = {}
@@ -154,18 +140,12 @@ describe('spec', () => {
       }
     });
 
-    handler(event, context, (err) => {
-      expect(err).to.equal(null);
-      expect(request.event).to.equal(event);
-      expect(request.context).to.equal(context);
-      done();
-    });
+    await handler(event, context);
+    expect(request.event).to.equal(event);
+    expect(request.context).to.equal(context);
   });
 
-  it('should support transforming the response', (done) => {
-    const event = {}
-    const context = {}
-
+  it('should support transforming the response', async () => {
     const handler = serverless((req, res) => {
       res.end('');
     }, {
@@ -176,16 +156,13 @@ describe('spec', () => {
       }
     });
 
-    handler(event, context, (err, obj) => {
-      expect(err).to.equal(null);
-      expect(obj.statusCode).to.equal(201);
-      expect(obj.headers).to.have.property('foo', 'bar');
-      expect(obj.headers).to.have.property('bar', 'baz');
-      done();
-    });
+    const obj = await handler({});
+    expect(obj.statusCode).to.equal(201);
+    expect(obj.headers).to.have.property('foo', 'bar');
+    expect(obj.headers).to.have.property('bar', 'baz');
   });
 
-  it('should handle unicode when inferring content-length', (done) => {
+  it('should handle unicode when inferring content-length', async () => {
     const body = `{"foo":"অ"}`;
 
     let length;
@@ -195,42 +172,33 @@ describe('spec', () => {
       res.end('');
     });
 
-    handler({ body }, context, (err) => {
-      expect(err).to.equal(null);
-      expect(length).to.equal(13);
-      done();
-    });
+    await handler({ body });
+    expect(length).to.equal(13);
   });
 
-  it('should throw if event.body is a number', (done) => {
+  it('should throw if event.body is a number', async () => {
     const body = 42;
 
     const handler = serverless((req, res) => {
       res.end('');
     });
 
-    handler({ body }, context, (err) => {
-      expect(err).to.be.an('Error')
-        .with.a.property('message', 'Unexpected event.body type: number');
-      done();
-    });
+    await expect(handler({ body }))
+      .to.be.rejectedWith(Error, 'Unexpected event.body type: number');
   });
 
-  it('should throw if event.body is an object but content-type is not json', (done) => {
+  it('should throw if event.body is an object but content-type is not json', async () => {
     const body = { foo: 'bar' };
 
     const handler = serverless((req, res) => {
       res.end('');
     });
 
-    handler({ body }, context, (err) => {
-      expect(err).to.be.an('Error')
-        .with.a.property('message', 'event.body was an object but content-type is not json');
-      done();
-    });
+    await expect(handler({ body }))
+      .to.be.rejectedWith(Error, 'event.body was an object but content-type is not json');
   });
 
-  it('should accept a Buffer body', (done) => {
+  it('should accept a Buffer body', async () => {
     const body = Buffer.from('hello world');
 
     const handler = serverless((req, res) => {
@@ -239,15 +207,14 @@ describe('spec', () => {
       });
     });
 
-    handler({ body }, context, (err, res) => {
-      expect(res).to.be.an('Object')
-        .with.a.property('body', 'hello world');
-      done();
-    });
+    const res = await handler({ body });
+    expect(res)
+      .to.be.an('Object')
+      .with.a.property('body', 'hello world');
   });
 
-  it('should stringify an Object body if content-type is json', (done) => {
-    const body = {foo:'bar'};
+  it('should stringify an Object body if content-type is json', async () => {
+    const body = { foo:'bar' };
     const headers = { 'content-type': 'application/json' };
 
     const handler = serverless((req, res) => {
@@ -256,56 +223,18 @@ describe('spec', () => {
       });
     });
 
-    handler({ body, headers }, context, (err, res) => {
-      expect(res).to.be.an('Object')
-        .with.a.property('body', '{"foo":"bar"}');
-      done();
-    });
+    const res = await handler({ body, headers });
+    expect(res)
+      .to.be.an('Object')
+      .with.a.property('body', '{"foo":"bar"}');
   });
 
-  it('should support returning a promise and not need a callback', () => {
-    const event = {}
-    const context = {}
-
-    const handler = serverless((req, res) => {
-      res.end('');
-    });
-
-    return handler(event, context)
-      .then(res => {
-        expect(res).to.have.property('statusCode', 200);
-      });
-  });
-
-  it('should support returning a promise that rejects and not need a callback', () => {
-    const event = {}
-    const context = {}
-
+  it('should support returning a promise that rejects and not need a callback', async () => {
     const handler = serverless(() => {
       throw new Error('test');
     });
 
-    return handler(event, context)
-      .then(() => {
-        throw new Error('Should not reach here');
-      })
-      .catch(err => {
-        expect(err).to.have.property('message', 'test');
-      });
-  });
-
-  it('should not return anything when given a callback', () => {
-    const event = {}
-    const context = {}
-
-    const handler = serverless((req, res) => {
-      res.end('test');
-    });
-
-    const r = handler(event, context, (err) => {
-      expect(err).to.be.null;
-      expect(r).to.be.undefined;
-    });
+    await expect(handler({})).to.be.rejectedWith('test');
   });
 
 });

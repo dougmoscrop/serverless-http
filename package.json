@@ -4,7 +4,7 @@
   "description": "Use existing web application frameworks in serverless environments",
   "main": "serverless-http.js",
   "engines": {
-    "node": ">=6.0"
+    "node": ">=8.0"
   },
   "directories": {
     "test": "test"
@@ -80,5 +80,7 @@
     "sinon": "^7.0.0",
     "typescript": "^3.2.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "chai-as-promised": "^7.1.1"
+  }
 }
