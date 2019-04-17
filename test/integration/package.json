@@ -15,11 +15,10 @@
     "got": "^8.3.0",
     "intercept-stdout": "^0.1.2",
     "serverless": "^1.26.1",
-    "serverless-plugin-custom-binary": "github:dougmoscrop/serverless-plugin-custom-binary#9763be857d5729ce1bd7",
+    "serverless-plugin-custom-binary": "2.0.0",
     "supertest": "^3.1.0"
   },
   "scripts": {
-    "test": "mocha"
   },
   "author": "",
   "license": "ISC"

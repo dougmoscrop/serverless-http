@@ -1,6 +1,6 @@
 'use strict';
 
-const isBinary = require('../lib/is-binary');
+const isBinary = require('../lib/provider/aws/is-binary');
 const expect = require('chai').expect;
 const sinon = require('sinon');
 

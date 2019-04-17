@@ -27,31 +27,28 @@ Some examples:
 
 ```javascript
 module.exports.handler = serverless(app, {
-
   request: {
     key: 'value'
   },
-  response: function(res) {
-    return Promise.resolve()
-      .then(() => {
-        res.foo = 'bar';
-      });
+  response(res) {
+    res.foo = 'bar';
   }
 })
 
 module.exports.handler = serverless(app, {
-  request: function(request, event, context) {
+  request(request, event, context) {
     request.context = event.requestContext;
   },
-  response: function(response, event, context) {
-    // you can return promises, but the value of the promise is ignored
+  async response(response, event, context) {
+    // the return value is always ignored
     return new Promise(resolve => {
       // override a property of the response, this will affect the response
       response.statusCode = 420;
 
       // delay your responses by 300ms!
       setTimeout(300, () => {
-        resolve('banana'); // this value has no effect on the response
+        // this value has no effect on the response
+        resolve('banana');
       });
     });
   }
@@ -80,7 +77,7 @@ serverless(app, {
 
 // your own custom callback
 serverless(app, {
-  binary: function(headers) {
+  binary(headers) {
     return ...
   }
 });

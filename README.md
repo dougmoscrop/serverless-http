@@ -2,6 +2,12 @@
 
 [![Build Status](https://travis-ci.org/dougmoscrop/serverless-http.svg?branch=master)](https://travis-ci.org/dougmoscrop/serverless-http)
 
+## 2.0
+
+The 2.0 release moves to async/await and requires Node 8+.
+
+All frameworks have been updated to their latest versions.
+
 ## Description
 
 This module allows you to 'wrap' your API for serverless use. No HTTP server, no ports or sockets. Just your code in the same execution pipeline you are already familiar with.
@@ -45,9 +51,13 @@ module.exports.handler = serverless(app);
 // or as a promise
 const handler = serverless(app);
 module.exports.handler = async (event, context) => {
-  return await handler(event, context);
+  // you can do other things here
+  const result = await handler(event, context);
+  // and here
+  return result;
 };
 ```
+
 ### Other examples
 [json-server-less-λ](https://github.com/pharindoko/json-server-less-lambda) - using serverless-http with json-server and serverless framework in AWS
 

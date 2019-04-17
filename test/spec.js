@@ -43,16 +43,16 @@ describe('spec', () => {
   });
 
   it('should trigger on-finished for res', async () => {
-    let called = false;
-    const handler = serverless((req, res) => {
-      onFinished(res, () => {
-        called = true;
+    return new Promise(resolve => {
+      const handler = serverless((req, res) => {
+        onFinished(res, () => {
+          resolve();
+        });
+        res.end('');
       });
-      res.end('');
-    });
 
-    await expect(handler(null)).to.be.fulfilled;
-    expect(called).to.be.true;
+      handler(null);
+    });
   });
 
   it('should trigger on-finished for req', async () => {

@@ -78,14 +78,14 @@ const tests = {
   }
 };
 
-['nodejs6.10', 'nodejs8.10'].reduce((memo, runtime) => {
+['nodejs8.10'].reduce((memo, runtime) => {
   return memo
     .then(() => {
       console.log('Testing runtime', runtime);
       process.env.RUNTIME = runtime;
       return run('deploy')
         .then(() => {
-          return run('info');
+          return run('info')
         })
         .then(info => {
           return getEndpoints(info);
@@ -97,8 +97,10 @@ const tests = {
               const endpoint = endpoints.find(e => e.pathname === path);
 
               if (endpoint) {
-                console.log('Testing', path);
-                return check(endpoint);
+                return check(endpoint)
+                  .catch(e => {
+                    console.error('Test failed: ', endpoint, e, e.stackTrace);
+                  });
               } else {
                 throw new Error('Missing endpoint for', path);
               }
@@ -109,7 +111,7 @@ const tests = {
           console.log('Test succeded!');
         })
         .catch(e => {
-          console.error('Test failed: ', e, e.stackTrace);
+          console.error('Test failed', e);
           process.exitCode = 1;
         })
         .then(() => {

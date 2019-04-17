@@ -15,7 +15,7 @@ service: hello-world
 
 provider:
   name: aws
-  runtime: nodejs4.3
+  runtime: nodejs8.10
 
 functions:
   api:
@@ -38,7 +38,7 @@ service: hello-world
 
 provider:
   name: aws
-  runtime: nodejs4.3
+  runtime: nodejs8.10
 
 functions:
   foo_api:

@@ -1,10 +1,10 @@
 'use strict';
 
-const koa = require('koa');
+const Koa = require('koa');
 
 const serverless = require('./serverless-http');
 
-const app = koa();
+const app = new Koa();
 
 app.use(function* () {
   this.status = 200;
