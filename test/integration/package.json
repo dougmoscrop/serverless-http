@@ -18,8 +18,7 @@
     "serverless-plugin-custom-binary": "2.0.0",
     "supertest": "^3.1.0"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "author": "",
   "license": "ISC"
 }

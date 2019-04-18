@@ -75,6 +75,12 @@ const tests = {
 
         throw new Error('Binary response body was not a buffer or not equal to the expected image');
       });
+  },
+  '/dev/timer': url => {
+    return supertest(url.origin)
+    .get(url.pathname)
+    .expect(200)
+    .expect('Content-Type', /json/);
   }
 };
 

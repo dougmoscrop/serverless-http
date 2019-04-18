@@ -16,6 +16,10 @@ package:
   excludeDevDependencies: false
 
 functions:
+  timer:
+    handler: timer.handler
+    events:
+      - http: ANY /timer
   express:
     handler: express.handler
     events:
