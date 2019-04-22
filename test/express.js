@@ -180,7 +180,10 @@ describe('express', () => {
 
   it('sets originalUrl', () => {
     app.use((req, res) => {
-      res.status(200).send(req.originalUrl);
+      res.status(200).json({
+        url: req.url,
+        originalUrl: req.originalUrl
+      });
     });
 
     return request(app, {
@@ -192,7 +195,10 @@ describe('express', () => {
     })
     .then(response => {
       expect(response.statusCode).to.equal(200);
-      expect(response.body).to.equal('/foo/bar');
+      expect(response.body).to.equal(JSON.stringify({
+        url: '/bar',
+        originalUrl: '/foo/bar'
+      }));
     });
   });
 
