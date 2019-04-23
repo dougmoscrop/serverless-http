@@ -86,8 +86,7 @@ describe('nodejs8.10', () => {
       it(method, () => {
         const endpoint = getEndpoint('/dev/express');
 
-        return supertest(endpoint.origin)
-          [method](endpoint.pathname)
+        return supertest(endpoint.origin)[method](endpoint.pathname)
           .expect(200)
           .expect('Content-Type', /json/)
           .then(response => {
