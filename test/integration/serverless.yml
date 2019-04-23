@@ -2,10 +2,11 @@ service: serverless-http-test
 
 provider:
   name: aws
-  runtime: ${env:RUNTIME}
+  runtime: nodejs8.10
 
 plugins:
   - serverless-plugin-custom-binary
+  - serverless-plugin-include-dependencies
 
 custom:
   apiGateway:
@@ -14,6 +15,9 @@ custom:
 
 package:
   excludeDevDependencies: false
+  exclude:
+    - test.js
+    - run.sh
 
 functions:
   timer:
@@ -24,6 +28,7 @@ functions:
     handler: express.handler
     events:
       - http: ANY /express
+      - http: ANY /express/{any+}
   koa:
     handler: koa.handler
     events:

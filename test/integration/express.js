@@ -6,9 +6,36 @@ const serverless = require('./serverless-http');
 
 const app = express();
 
-app.use(function (req, res) {
+app.get('/express', function (req, res) {
   res.status(200).json({
-    url: req.url
+    originalUrl: req.originalUrl,
+    url: req.url,
+    method: req.method.toLowerCase(),
+  });
+});
+
+app.post('/express', function (req, res) {
+  res.status(200).json({
+    originalUrl: req.originalUrl,
+    url: req.url,
+    method: req.method.toLowerCase(),
+  });
+});
+
+app.put('/express', function (req, res) {
+  res.status(200).json({
+    originalUrl: req.originalUrl,
+    url: req.url,
+    method: req.method.toLowerCase(),
+  });
+});
+
+app.get('/express/pathed/:id', function (req, res) {
+  res.status(200).json({
+    originalUrl: req.originalUrl,
+    url: req.url,
+    method: req.method.toLowerCase(),
+    id: req.params.id,
   });
 });
 

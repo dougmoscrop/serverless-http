@@ -6,7 +6,8 @@ const { URL } = require('url');
 const path = require('path');
 const fs = require('fs');
 
-const Serverless = require('serverless')
+const { expect } = require('chai');
+const Serverless = require('serverless');
 const intercept = require('intercept-stdout');
 const supertest = require('supertest');
 
@@ -44,25 +45,84 @@ function getEndpoints(info) {
   }, []);
 }
 
-const tests = {
-  '/dev/express': url => {
-    return supertest(url.origin)
-      .get(url.pathname)
-      .expect(200)
-      .expect('Content-Type', /json/);
-  },
-  '/dev/koa': url => {
-    return supertest(url.origin)
-      .get(url.pathname)
-      .expect(200)
-      .expect('Content-Type', /json/);
-  },
-  '/dev/binary': url => {
+describe('nodejs8.10', () => {
+  let endpoints;
+
+  function getEndpoint(path) {
+    return endpoints.find(e => e.pathname === path);
+  }
+
+  before(async function() {
+    this.timeout(0);
+    await run('deploy');
+  });
+
+  before(async function() {
+    this.timeout(10000);
+    const info = await run('info');
+    endpoints = await getEndpoints(info);
+  });
+
+  describe('koa', () => {
+
+    it('get', () => {
+      const endpoint = getEndpoint('/dev/koa');
+
+      return supertest(endpoint.origin)
+        .get(endpoint.pathname)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .then(response => {
+          expect(response.body.originalUrl).to.equal('/dev/koa');
+          expect(response.body.url).to.equal('/koa');
+          expect(response.body.method).to.equal('get');
+        });
+    });
+  });
+
+  describe('express', () => {
+
+    ['get', 'put', 'post'].forEach(method => {
+      it(method, () => {
+        const endpoint = getEndpoint('/dev/express');
+
+        return supertest(endpoint.origin)
+          [method](endpoint.pathname)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .then(response => {
+            expect(response.body.originalUrl).to.equal('/dev/express');
+            expect(response.body.url).to.equal('/express');
+            expect(response.body.method).to.equal(method);
+          });
+      });
+    });
+
+    it('get-with-path', () => {
+      const endpoint = getEndpoint('/dev/express');
+
+      return supertest(endpoint.origin)
+        .get(`${endpoint.pathname}/pathed/1`)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .then(response => {
+          expect(response.body.originalUrl).to.equal('/dev/express/pathed/1');
+          expect(response.body.url).to.equal('/express/pathed/1');
+          expect(response.body.method).to.equal('get');
+          expect(response.body.id).to.equal('1');
+        });
+    });
+
+  });
+
+  it('binary', () => {
+    const endpoint = getEndpoint('/dev/binary');
+
     const imagePath = path.join(__dirname, 'image.png');
     const expected = fs.readFileSync(imagePath);
 
-    return supertest(url.origin)
-      .get(url.pathname)
+    return supertest(endpoint.origin)
+      .get(endpoint.pathname)
       .set('Accept', 'image/png') // if this is image/*, APIg will not match :(
       .expect(200)
       .expect('Content-Type', /png/)
@@ -75,54 +135,14 @@ const tests = {
 
         throw new Error('Binary response body was not a buffer or not equal to the expected image');
       });
-  },
-  '/dev/timer': url => {
-    return supertest(url.origin)
-    .get(url.pathname)
-    .expect(200)
-    .expect('Content-Type', /json/);
-  }
-};
+  });
 
-['nodejs8.10'].reduce((memo, runtime) => {
-  return memo
-    .then(() => {
-      console.log('Testing runtime', runtime);
-      process.env.RUNTIME = runtime;
-      return run('deploy')
-        .then(() => {
-          return run('info')
-        })
-        .then(info => {
-          return getEndpoints(info);
-        })
-        .then(endpoints => {
-          return Promise.all(
-            Object.keys(tests).map(path => {
-              const check = tests[path];
-              const endpoint = endpoints.find(e => e.pathname === path);
+  it('timer', () => {
+    const endpoint = getEndpoint('/dev/timer');
 
-              if (endpoint) {
-                return check(endpoint)
-                  .catch(e => {
-                    console.error('Test failed: ', endpoint, e, e.stackTrace);
-                  });
-              } else {
-                throw new Error('Missing endpoint for', path);
-              }
-            })
-          )
-        })
-        .then(() => {
-          console.log('Test succeded!');
-        })
-        .catch(e => {
-          console.error('Test failed', e);
-          process.exitCode = 1;
-        })
-        .then(() => {
-          return run('remove');
-        });
-
-    });
-}, Promise.resolve());
+    return supertest(endpoint.origin)
+      .get(endpoint.pathname)
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+});
