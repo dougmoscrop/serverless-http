@@ -81,6 +81,5 @@
     "sinon": "^7.3.1",
     "typescript": "^3.4.3"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
