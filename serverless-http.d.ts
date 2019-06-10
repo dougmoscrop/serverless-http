@@ -13,10 +13,9 @@ declare namespace ServerlessHttp {
     }
     type HandlerCompatibleApp = Function | Partial<FrameworkApplication>;
     type LambdaPartial = (
-        event: any,
-        context: AWSLambda.Context,
-        callback?: AWSLambda.Callback
-    ) => void;
+        event: AWSLambda.APIGatewayProxyEvent,
+        context: AWSLambda.Context
+    ) => AWSLambda.APIGatewayProxyResult;
 }
 
 declare function serverlessHttp(
