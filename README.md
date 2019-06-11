@@ -39,9 +39,9 @@ Please check the `examples` folder!
 
 ```javascript
 const serverless = require('serverless-http');
-const koa = require('koa'); // or any supported framework
+const Koa = require('koa'); // or any supported framework
 
-const app = koa();
+const app = new Koa();
 
 app.use(/* register your middleware as normal */);
 
