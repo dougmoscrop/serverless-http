@@ -125,6 +125,20 @@ describe('spec', () => {
     expect(called.headers['x-request-id']).to.be.undefined;
   });
 
+  it('should set request context on request', async () => {
+    let called;
+    const handler = serverless((req, res) => {
+      onHeaders(res, () => {
+        called = req;
+      });
+      res.end('');
+    });
+    const requestContext = {};
+    await handler({ requestContext });
+    expect(!!called).to.be.true;
+    expect(called.requestContext).to.equal(requestContext);
+  });
+
   it('should support transforming the request', async () => {
     let request;
     const event = {}
@@ -134,11 +148,11 @@ describe('spec', () => {
       request = req;
       res.end('');
     }, {
-      request: (req, evt, ctx) => {
-        req.event = evt;
-        req.context = ctx;
-      }
-    });
+        request: (req, evt, ctx) => {
+          req.event = evt;
+          req.context = ctx;
+        }
+      });
 
     await handler(event, context);
     expect(request.event).to.equal(event);
@@ -149,12 +163,12 @@ describe('spec', () => {
     const handler = serverless((req, res) => {
       res.end('');
     }, {
-      response: (res) => {
-        res.statusCode = 201;
-        res.headers['foo'] = 'bar';
-        res.setHeader('bar', 'baz');
-      }
-    });
+        response: (res) => {
+          res.statusCode = 201;
+          res.headers['foo'] = 'bar';
+          res.setHeader('bar', 'baz');
+        }
+      });
 
     const obj = await handler({});
     expect(obj.statusCode).to.equal(201);
@@ -214,7 +228,7 @@ describe('spec', () => {
   });
 
   it('should stringify an Object body if content-type is json', async () => {
-    const body = { foo:'bar' };
+    const body = { foo: 'bar' };
     const headers = { 'content-type': 'application/json' };
 
     const handler = serverless((req, res) => {
