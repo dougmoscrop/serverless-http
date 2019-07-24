@@ -197,7 +197,7 @@ describe('express', () => {
       expect(response.statusCode).to.equal(200);
       expect(response.body).to.equal(JSON.stringify({
         url: '/bar',
-        originalUrl: '/foo/bar'
+        originalUrl: '/bar'
       }));
     });
   });
