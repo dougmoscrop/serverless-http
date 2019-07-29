@@ -181,7 +181,7 @@ describe('restana', () => {
     })
     .then(response => {
       expect(response.statusCode).to.equal(200);
-      expect(response.body).to.equal('/foo/bar');
+      expect(response.body).to.equal('/bar');
     });
   });
 });
