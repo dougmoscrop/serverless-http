@@ -12,6 +12,47 @@ module.exports.handler = serverless(app, {
 });
 ```
 
+## Base Path
+
+- **basePath**: The base path/mount point for your serverless app. Useful if you want to have multiple Lambdas to represent
+diffent portions of your application.
+
+**BEFORE:**
+
+```javascript
+app.get('/new', (req, res) => {
+  return res.send('woop');
+});
+
+module.exports.handler = serverless(app);
+```
+
+```bash
+[GET] http://localhost/transactions/new -> 404 :'(
+```
+
+**AFTER:**
+
+```javascript
+app.get('/new', (req, res) => {
+  return res.send('woop');
+});
+module.exports.handler = serverless(app, {
+  basePath: '/transactions'
+});
+```
+
+```bash
+[GET] http://localhost/transactions/new -> 200 :+1:
+```
+
+**STAGE REMOVAL:**
+BasePath will also remove pesky stage information from your URL, so the above example will also work with:
+
+```bash
+[GET] http://api-gateway.amazonaws.com/dev/v1/transactions/new -> 200!
+```
+
 ## Transformations
 
 - **request**: a *transform* for the request, before it is sent to the app
