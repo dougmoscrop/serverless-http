@@ -13,8 +13,8 @@ describe('base path', () => {
     fooApp = express();
     fooApp.get('/test', (req, res) => {
       return res.send(expectedFooResponse);
-    })
-  })
+    });
+  });
 
   it('should allow for a base path to be set', () => {
     return request(fooApp, {
@@ -25,7 +25,6 @@ describe('base path', () => {
         expect(response.statusCode).to.equal(200);
         expect(response.body).to.equal(expectedFooResponse)
       });
-
   });
 
   it('should remove stage path part', () => {
@@ -37,7 +36,5 @@ describe('base path', () => {
         expect(response.statusCode).to.equal(200);
         expect(response.body).to.equal(expectedFooResponse)
       });
-
   });
-
 });
