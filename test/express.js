@@ -178,30 +178,6 @@ describe('express', () => {
     });
   });
 
-  it('sets originalUrl', () => {
-    app.use((req, res) => {
-      res.status(200).json({
-        url: req.url,
-        originalUrl: req.originalUrl
-      });
-    });
-
-    return request(app, {
-      httpMethod: 'GET',
-      path: '/bar',
-      requestContext: {
-        path: '/foo/bar'
-      }
-    })
-    .then(response => {
-      expect(response.statusCode).to.equal(200);
-      expect(response.body).to.equal(JSON.stringify({
-        url: '/bar',
-        originalUrl: '/bar'
-      }));
-    });
-  });
-
   it('destroy weird', () => {
     app.use((req, res) => {
       // this was causing a .destroy is not a function error

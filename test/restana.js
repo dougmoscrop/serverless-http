@@ -167,21 +167,4 @@ describe('restana', () => {
     });
   });
 
-  it('sets originalUrl', () => {
-    app.use((req, res) => {
-      res.send(req.originalUrl);
-    });
-
-    return request(app, {
-      httpMethod: 'GET',
-      path: '/bar',
-      requestContext: {
-        path: '/foo/bar'
-      }
-    })
-    .then(response => {
-      expect(response.statusCode).to.equal(200);
-      expect(response.body).to.equal('/bar');
-    });
-  });
 });
