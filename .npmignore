@@ -3,9 +3,12 @@ coverage/
 docs/
 examples/
 .nyc_output/
+.vscode/
+.serverless/
 .editorconfig
 .eslintignore
 .eslintrc
 .gitignore
 .npmignore
 .travis.yml
+serverless.yml

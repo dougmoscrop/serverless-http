@@ -1,0 +1,70 @@
+service: serverless-http-test
+
+provider:
+  name: aws
+  runtime: ${opt:runtime}
+
+plugins:
+  - serverless-plugin-custom-binary
+  - serverless-plugin-include-dependencies
+  - serverless-plugin-common-excludes
+  - serverless-offline
+
+custom:
+  apiGateway:
+    binaryMediaTypes:
+      - image/png
+
+package:
+  excludeDevDependencies: false
+  include:
+    - test/integration/**
+  exclude:
+    - test.js
+    - run.sh
+
+functions:
+  echo:
+    handler: test/integration/echo.handler
+    events:
+      - http: ANY /echo
+      - http:
+          method: ANY
+          path: /echo/async
+          async: true
+      - http:
+          method: ANY
+          path: /echo/async/{any+}
+          async: true
+      - http:
+          method: ANY
+          path: /echo/sync
+          integration: 'lambda'
+      - http:
+          method: ANY
+          path: /echo/sync/{any+}
+          integration: 'lambda'
+  timer:
+    handler: test/integration/timer.handler
+    events:
+      - http: ANY /timer
+  express:
+    handler: test/integration/express.handler
+    events:
+      - http: ANY /express
+      - http: ANY /express/{any+}
+  koa:
+    handler: test/integration/koa.handler
+    events:
+      - http: ANY /koa
+  cookies:
+    handler: test/integration/cookies.handler
+    events:
+      - http: ANY /cookies
+  binary:
+    handler: test/integration/binary.handler
+    events:
+      - http:
+          path: /binary
+          method: ANY
+          contentHandling: CONVERT_TO_BINARY

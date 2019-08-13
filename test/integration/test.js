@@ -45,103 +45,113 @@ function getEndpoints(info) {
   }, []);
 }
 
-describe('nodejs8.10', () => {
-  let endpoints;
+const runtimes = [
+  'nodejs8.10',
+  'nodejs10.x'
+];
 
-  function getEndpoint(path) {
-    return endpoints.find(e => e.pathname === path);
-  }
-
-  before(async function() {
-    this.timeout(0);
-    await run('deploy');
-  });
-
-  before(async function() {
+runtimes.forEach(runtime => {
+  describe(runtime, function () {
+    this.slow(5000);
     this.timeout(10000);
-    const info = await run('info');
-    endpoints = await getEndpoints(info);
-  });
 
-  describe('koa', () => {
+    let endpoints;
 
-    it('get', () => {
-      const endpoint = getEndpoint('/dev/koa');
+    function getEndpoint(path) {
+      return endpoints.find(e => e.pathname === path);
+    }
 
-      return supertest(endpoint.origin)
-        .get(endpoint.pathname)
-        .expect(200)
-        .expect('Content-Type', /json/)
-        .then(response => {
-          expect(response.body.originalUrl).to.equal('/dev/koa');
-          expect(response.body.url).to.equal('/koa');
-          expect(response.body.method).to.equal('get');
-        });
+    before(async function() {
+      this.timeout(0);
+      await run(`deploy --runtime=${runtime}`);
     });
-  });
 
-  describe('express', () => {
+    before(async function() {
+      this.timeout(10000);
+      const info = await run('info');
+      endpoints = await getEndpoints(info);
+    });
 
-    ['get', 'put', 'post'].forEach(method => {
-      it(method, () => {
-        const endpoint = getEndpoint('/dev/express');
+    describe('koa', () => {
 
-        return supertest(endpoint.origin)[method](endpoint.pathname)
+      it('get', () => {
+        const endpoint = getEndpoint('/dev/koa');
+
+        return supertest(endpoint.origin)
+          .get(endpoint.pathname)
           .expect(200)
           .expect('Content-Type', /json/)
           .then(response => {
-            expect(response.body.originalUrl).to.equal('/dev/express');
-            expect(response.body.url).to.equal('/express');
-            expect(response.body.method).to.equal(method);
+            expect(response.body.url).to.equal('/koa');
+            expect(response.body.method).to.equal('get');
           });
       });
     });
 
-    it('get-with-path', () => {
-      const endpoint = getEndpoint('/dev/express');
+    describe('express', () => {
+
+      ['get', 'put', 'post'].forEach(method => {
+        it(method, () => {
+          const endpoint = getEndpoint('/dev/express');
+
+          return supertest(endpoint.origin)[method](endpoint.pathname)
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .then(response => {
+              expect(response.body.originalUrl).to.equal('/express');
+              expect(response.body.url).to.equal('/express');
+              expect(response.body.method).to.equal(method);
+            });
+        });
+      });
+
+      it('get-with-path', () => {
+        const endpoint = getEndpoint('/dev/express');
+
+        return supertest(endpoint.origin)
+          .get(`${endpoint.pathname}/pathed/1`)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .then(response => {
+            expect(response.body.originalUrl).to.equal('/express/pathed/1');
+            expect(response.body.url).to.equal('/express/pathed/1');
+            expect(response.body.method).to.equal('get');
+            expect(response.body.id).to.equal('1');
+          });
+      });
+
+    });
+
+    it('binary', () => {
+      const endpoint = getEndpoint('/dev/binary');
+
+      const imagePath = path.join(__dirname, 'image.png');
+      const expected = fs.readFileSync(imagePath);
 
       return supertest(endpoint.origin)
-        .get(`${endpoint.pathname}/pathed/1`)
+        .get(endpoint.pathname)
+        .set('Accept', 'image/png') // if this is image/*, APIg will not match :(
         .expect(200)
-        .expect('Content-Type', /json/)
+        .expect('Content-Type', /png/)
         .then(response => {
-          expect(response.body.originalUrl).to.equal('/dev/express/pathed/1');
-          expect(response.body.url).to.equal('/express/pathed/1');
-          expect(response.body.method).to.equal('get');
-          expect(response.body.id).to.equal('1');
+          if (Buffer.isBuffer(response.body)) {
+            if (response.body.equals(expected)) {
+              return;
+            }
+          }
+
+          throw new Error('Binary response body was not a buffer or not equal to the expected image');
         });
     });
 
+    it('timer', () => {
+      const endpoint = getEndpoint('/dev/timer');
+
+      return supertest(endpoint.origin)
+        .get(endpoint.pathname)
+        .expect(200)
+        .expect('Content-Type', /json/);
+    });
   });
 
-  it('binary', () => {
-    const endpoint = getEndpoint('/dev/binary');
-
-    const imagePath = path.join(__dirname, 'image.png');
-    const expected = fs.readFileSync(imagePath);
-
-    return supertest(endpoint.origin)
-      .get(endpoint.pathname)
-      .set('Accept', 'image/png') // if this is image/*, APIg will not match :(
-      .expect(200)
-      .expect('Content-Type', /png/)
-      .then(response => {
-        if (Buffer.isBuffer(response.body)) {
-          if (response.body.equals(expected)) {
-            return;
-          }
-        }
-
-        throw new Error('Binary response body was not a buffer or not equal to the expected image');
-      });
-  });
-
-  it('timer', () => {
-    const endpoint = getEndpoint('/dev/timer');
-
-    return supertest(endpoint.origin)
-      .get(endpoint.pathname)
-      .expect(200)
-      .expect('Content-Type', /json/);
-  });
 });
