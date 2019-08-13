@@ -97,6 +97,17 @@ describe('spec', () => {
     expect(called.headers['custom-request-id']).to.eql('bar');
   });
 
+  it('should use requestPath when available', async () => {
+    let url;
+    const handler = serverless((req, res) => {
+      url = req.url;
+      res.end('');
+    });
+
+    await handler({ requestPath: '/different', requestContext: { requestId: 'bar' } });
+    expect(url).to.deep.equal('/different');
+  });
+
   it('should keep existing requestId', async () => {
     let called;
     const handler = serverless((req, res) => {
