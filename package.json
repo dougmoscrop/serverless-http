@@ -1,6 +1,6 @@
 {
   "name": "serverless-http",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Use existing web application frameworks in serverless environments",
   "main": "serverless-http.js",
   "engines": {
