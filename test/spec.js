@@ -212,15 +212,17 @@ describe('spec', () => {
       .to.be.rejectedWith(Error, 'Unexpected event.body type: number');
   });
 
-  it('should throw if event.body is an object but content-type is not json', async () => {
+  it('should stringify if event.body is an object', async () => {
     const body = { foo: 'bar' };
-
+    const expected = Buffer.from(JSON.stringify(body));
+    let actual;
     const handler = serverless((req, res) => {
+      actual = req.body;
       res.end('');
     });
 
-    await expect(handler({ body }))
-      .to.be.rejectedWith(Error, 'event.body was an object but content-type is not json');
+    await handler({ body });
+    expect(actual).to.deep.equal(expected);
   });
 
   it('should accept a Buffer body', async () => {
