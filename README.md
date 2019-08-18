@@ -24,6 +24,7 @@ This module allows you to 'wrap' your API for serverless use. No HTTP server, no
 * Hapi *
 * Fastify *
 * Restify *
+* Polka *
 
 (* Experimental)
 

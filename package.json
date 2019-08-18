@@ -79,6 +79,7 @@
     "nyc": "^14.1.1",
     "on-finished": "^2.3.0",
     "on-headers": "^1.0.2",
+    "polka": "^0.5.2",
     "reflect-metadata": "^0.1.13",
     "restana": "^3.3.1",
     "sails": "^1.2.3",
