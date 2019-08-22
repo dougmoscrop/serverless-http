@@ -15,6 +15,7 @@ This module allows you to 'wrap' your API for serverless use. No HTTP server, no
 ## Support
 
 ### Supported Frameworks
+(* Experimental)
 
 * Connect
 * Express
@@ -25,8 +26,7 @@ This module allows you to 'wrap' your API for serverless use. No HTTP server, no
 * Fastify *
 * Restify *
 * Polka *
-
-(* Experimental)
+* Loopback *
 
 ### Supported Providers
 
