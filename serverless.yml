@@ -24,6 +24,10 @@ package:
     - run.sh
 
 functions:
+  compare:
+    handler: test/integration/compare.handler
+    events:
+      - http: ANY /compare
   echo:
     handler: test/integration/echo.handler
     events:
