@@ -21,6 +21,6 @@ declare namespace ServerlessHttp {
 declare function serverlessHttp(
     app: ServerlessHttp.HandlerCompatibleApp,
     opts?: any
-): ServerlessHttp.LambdaPartial;
+): Promise<ServerlessHttp.LambdaPartial>;
 
 export = serverlessHttp;
