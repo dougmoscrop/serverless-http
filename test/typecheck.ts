@@ -1,6 +1,6 @@
-import serverlessHttp = require('..');
-import Koa = require('koa');
+import Koa = require("koa");
+import serverlessHttp = require("..");
 
-// Simple typescript sanity check
-serverlessHttp(() => { });
-serverlessHttp(new Koa());
+// Basic definitions check.
+const handlerWithFn: serverlessHttp.Handler = serverlessHttp(() => { });
+const handlerWithApp: serverlessHttp.Handler = serverlessHttp(new Koa());

@@ -3,6 +3,7 @@
   "version": "2.3.0",
   "description": "Use existing web application frameworks in serverless environments",
   "main": "serverless-http.js",
+  "types": "serverless-http.d.ts",
   "engines": {
     "node": ">=8.0"
   },
@@ -14,7 +15,7 @@
     "url": "https://github.com/dougmoscrop/serverless-http"
   },
   "scripts": {
-    "pretest": "tsc --noEmit test/typecheck.ts",
+    "pretest": "tsc --strict --noEmit test/typecheck.ts",
     "test": "nyc mocha",
     "posttest": "eslint lib test",
     "test:integration": "mocha test/integration/test.js",
