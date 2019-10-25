@@ -69,7 +69,6 @@ describe('koa', () => {
     });
   });
 
-
   it('basic middleware should set statusCode and custom body', () => {
     app.use(async (ctx) => {
       ctx.status = 201;
@@ -140,7 +139,7 @@ describe('koa', () => {
     });
   });
 
-it('auth middleware should set statusCode 401', () => {
+  it('auth middleware should set statusCode 401', () => {
     app.use(async (ctx) => {
       ctx.throw(401, `Unauthorized: ${ctx.request.method} ${ctx.request.url}`);
     });
@@ -152,7 +151,6 @@ it('auth middleware should set statusCode 401', () => {
       expect(response.statusCode).to.equal(401);
     });
   });
-
 
   describe('koa-route', () => {
 
@@ -230,6 +228,13 @@ it('auth middleware should set statusCode 401', () => {
         ctx.body = await Promise.resolve('hello');
       });
 
+      router.get('/:user', async (ctx) => {
+        ctx.body = {
+          router: ctx.params.user,
+          event: ctx.event.pathParameters.user
+        };
+      })
+
       app.use(router.routes());
       app.use(router.allowedMethods());
     });
@@ -256,6 +261,22 @@ it('auth middleware should set statusCode 401', () => {
           'content-length': '9',
           'content-type': 'text/plain; charset=utf-8'
         });
+      });
+    });
+
+    /*
+     * This is mostly here to ensure that anything serverless-http adds
+     * does not take precedence over any internal routing.
+     */
+    it.only('should correctly show path params', function() {
+      return request(app, {
+        httpMethod: 'GET',
+        path: '/pittTheYounger',
+        pathParameters: { user: 'pittTheElder' }
+      })
+      .then((response) => {
+        expect(response.statusCode).to.equal(200);
+        expect(response.body).to.equal('hello pittTheYounger');
       });
     });
   });
