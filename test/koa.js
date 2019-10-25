@@ -228,10 +228,10 @@ describe('koa', () => {
         ctx.body = await Promise.resolve('hello');
       });
 
-      router.get('/:user', async (ctx) => {
+      router.get('/users/:user', async (ctx) => {
         ctx.body = {
           router: ctx.params.user,
-          event: ctx.event.pathParameters.user
+          event: (ctx.req.pathParameters || {}).user
         };
       })
 
@@ -268,15 +268,18 @@ describe('koa', () => {
      * This is mostly here to ensure that anything serverless-http adds
      * does not take precedence over any internal routing.
      */
-    it.only('should correctly show path params', function() {
+    it('should correctly show path params', function() {
       return request(app, {
         httpMethod: 'GET',
-        path: '/pittTheYounger',
+        path: '/users/pittTheYounger',
         pathParameters: { user: 'pittTheElder' }
-      })
+      }, { bindParams: true })
       .then((response) => {
+        const body = JSON.parse(response.body)
+        console.log(response.body, body)
         expect(response.statusCode).to.equal(200);
-        expect(response.body).to.equal('hello pittTheYounger');
+        expect(body.router).to.equal('pittTheYounger');
+        expect(body.router).to.not.equal(body.event)
       });
     });
   });
