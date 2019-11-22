@@ -3,6 +3,7 @@
   "version": "2.3.0",
   "description": "Use existing web application frameworks in serverless environments",
   "main": "serverless-http.js",
+  "types": "serverless-http.d.ts",
   "engines": {
     "node": ">=8.0"
   },
