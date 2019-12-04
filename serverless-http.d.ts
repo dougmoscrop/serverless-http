@@ -1,26 +1,34 @@
 /// <reference types="aws-lambda" />
 
 declare namespace ServerlessHttp {
-    type FrameworkApplication = {
-        callback: Function;
-        handle: Function;
-        router: {
-            route: Function;
-        }
-        _core: {
-            _dispatch: Function;
-        }
+  export interface FrameworkApplication {
+    callback: Function;
+    handle: Function;
+    router: {
+      route: Function;
     }
-    type HandlerCompatibleApp = Function | Partial<FrameworkApplication>;
-    type LambdaPartial = (
-        event: AWSLambda.APIGatewayProxyEvent,
-        context: AWSLambda.Context
-    ) => AWSLambda.APIGatewayProxyResult;
+    _core: {
+      _dispatch: Function;
+    }
+  }
+
+  /**
+   * Handler-compatible function or application.
+   */
+  export type Application = Function | Partial<FrameworkApplication>;
+
+  /**
+   * AWS Lambda APIGatewayProxyHandler-like handler.
+   */
+  export type Handler = (
+    event: AWSLambda.APIGatewayProxyEvent,
+    context: AWSLambda.Context
+  ) => Promise<AWSLambda.APIGatewayProxyResult>;
 }
 
-declare function serverlessHttp(
-    app: ServerlessHttp.HandlerCompatibleApp,
-    opts?: any
-): Promise<ServerlessHttp.LambdaPartial>;
+/**
+ * Wraps the application into a Lambda APIGatewayProxyHandler-like handler.
+ */
+declare function ServerlessHttp(application: ServerlessHttp.Application, options?: any): ServerlessHttp.Handler;
 
-export = serverlessHttp;
+export = ServerlessHttp;
