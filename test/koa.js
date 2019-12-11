@@ -50,7 +50,7 @@ describe('koa', () => {
   });
 
 
-  it('basic middleware should receive queryString when not passing queryStringParameters but queryString', () => {
+  it('basic middleware should receive queryString when queryStringParameters is an empty object but queryString not', () => {
     app.use(async (ctx) => {
       ctx.body = ctx.query.x;
     });
@@ -58,6 +58,7 @@ describe('koa', () => {
     return request(app, {
       httpMethod: 'GET',
       path: '/',
+      queryStringParameters: {},
       queryString: {
         x: 'y'
       }
