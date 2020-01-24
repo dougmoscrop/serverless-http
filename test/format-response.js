@@ -8,7 +8,7 @@ describe('format-response', function() {
 
   it('throws on chunked transfer-encoding', () => {
     const response = new Response({});
-    response._headers = { 'transfer-encoding': 'chunked' };
+    response.setHeader('transfer-encoding', 'chunked');
     expect(() => formatResponse(response, {})).to.throw(Error, 'chunked encoding not supported');
   });
 
