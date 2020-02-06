@@ -50,6 +50,7 @@
   "homepage": "https://github.com/dougmoscrop/serverless-http",
   "license": "MIT",
   "optionalDependencies": {
+    "@azure/functions": "^1.0.3",
     "@types/aws-lambda": "^8.10.19"
   },
   "devDependencies": {
