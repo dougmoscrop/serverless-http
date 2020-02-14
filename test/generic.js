@@ -158,4 +158,26 @@ describe('generic http listener', () => {
       });
     });
   });
+
+  it('should intercept writeHead', () => {
+    app = function(req, res) {
+      res.writeHead(302, {
+        Location: '/redirect',
+        Accept: '*/*'
+      });
+      res.end();
+    };
+
+    return request(app, {
+      httpMethod: 'GET',
+      path: '/'
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(302);
+      expect(response.headers).to.deep.equal({
+        location: '/redirect',
+        accept: '*/*'
+      });
+    });
+  });
 });
