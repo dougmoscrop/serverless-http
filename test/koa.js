@@ -13,7 +13,7 @@ const Koa = require('koa'),
 describe('koa', () => {
   let app;
 
-  beforeEach(function() {
+  beforeEach(function () {
     app = new Koa();
   });
 
@@ -26,10 +26,10 @@ describe('koa', () => {
       httpMethod: 'GET',
       path: '/'
     })
-    .then(response => {
-      expect(response.statusCode).to.equal(418);
-      expect(response.body).to.equal('I\'m a teapot')
-    });
+      .then(response => {
+        expect(response.statusCode).to.equal(418);
+        expect(response.body).to.equal('I\'m a teapot')
+      });
   });
 
   it('basic middleware should receive queryString', () => {
@@ -44,9 +44,28 @@ describe('koa', () => {
         x: 'y'
       }
     })
-    .then(response => {
-      expect(response.body).to.equal('y');
+      .then(response => {
+        expect(response.body).to.equal('y');
+      });
+  });
+
+
+  it('basic middleware should receive queryString when queryStringParameters is an empty object but queryString not', () => {
+    app.use(async (ctx) => {
+      ctx.body = ctx.query.x;
     });
+
+    return request(app, {
+      httpMethod: 'GET',
+      path: '/',
+      queryStringParameters: {},
+      queryString: {
+        x: 'y'
+      }
+    })
+      .then(response => {
+        expect(response.body).to.equal('y');
+      });
   });
 
   it('basic middleware should receive multi-value queryString', () => {
@@ -64,9 +83,9 @@ describe('koa', () => {
         x: ['z', 'y']
       }
     })
-    .then(response => {
-      expect(response.body).to.equal('["z","y"]');
-    });
+      .then(response => {
+        expect(response.body).to.equal('["z","y"]');
+      });
   });
 
 
@@ -80,10 +99,10 @@ describe('koa', () => {
       httpMethod: 'GET',
       path: '/'
     })
-    .then(response => {
-      expect(response.statusCode).to.equal(201);
-      expect(response.body).to.equal('{"foo":"bar"}');
-    });
+      .then(response => {
+        expect(response.statusCode).to.equal(201);
+        expect(response.body).to.equal('{"foo":"bar"}');
+      });
   });
 
   it('basic middleware should set headers', () => {
@@ -96,14 +115,14 @@ describe('koa', () => {
       httpMethod: 'GET',
       path: '/'
     })
-    .then(response => {
-      expect(response.statusCode).to.equal(200);
-      expect(response.headers).to.deep.equal({
-        'content-length': '14',
-        'content-type': 'application/json; charset=utf-8',
-        'x-test-header': 'foo'
+      .then(response => {
+        expect(response.statusCode).to.equal(200);
+        expect(response.headers).to.deep.equal({
+          'content-length': '14',
+          'content-type': 'application/json; charset=utf-8',
+          'x-test-header': 'foo'
+        });
       });
-    });
   });
 
   it('basic middleware should get headers', () => {
@@ -120,10 +139,10 @@ describe('koa', () => {
         'X-Request-Id': 'abc'
       }
     })
-    .then(response => {
-      expect(response.statusCode).to.equal(204);
-      expect(headers['x-request-id']).to.equal('abc');
-    });
+      .then(response => {
+        expect(response.statusCode).to.equal(204);
+        expect(headers['x-request-id']).to.equal('abc');
+      });
   });
 
   it('error middleware should set statusCode and default body', () => {
@@ -134,13 +153,13 @@ describe('koa', () => {
       httpMethod: 'GET',
       path: '/'
     })
-    .then(response => {
-      expect(response.statusCode).to.equal(500);
-      expect(response.body).to.equal('Internal Server Error')
-    });
+      .then(response => {
+        expect(response.statusCode).to.equal(500);
+        expect(response.body).to.equal('Internal Server Error')
+      });
   });
 
-it('auth middleware should set statusCode 401', () => {
+  it('auth middleware should set statusCode 401', () => {
     app.use(async (ctx) => {
       ctx.throw(401, `Unauthorized: ${ctx.request.method} ${ctx.request.url}`);
     });
@@ -148,9 +167,9 @@ it('auth middleware should set statusCode 401', () => {
       httpMethod: 'GET',
       path: '/'
     })
-    .then(response => {
-      expect(response.statusCode).to.equal(401);
-    });
+      .then(response => {
+        expect(response.statusCode).to.equal(401);
+      });
   });
 
 
@@ -174,10 +193,10 @@ it('auth middleware should set statusCode 401', () => {
         httpMethod: 'GET',
         path: '/foo'
       })
-      .then(response => {
-        expect(response.statusCode).to.equal(200);
-        expect(response.body).to.equal('foo')
-      });
+        .then(response => {
+          expect(response.statusCode).to.equal(200);
+          expect(response.body).to.equal('foo')
+        });
     });
 
     it('should get path information when it matches with params', () => {
@@ -185,10 +204,10 @@ it('auth middleware should set statusCode 401', () => {
         httpMethod: 'GET',
         path: '/foo/baz'
       })
-      .then(response => {
-        expect(response.statusCode).to.equal(200);
-        expect(response.body).to.equal('baz')
-      });
+        .then(response => {
+          expect(response.statusCode).to.equal(200);
+          expect(response.body).to.equal('baz')
+        });
     });
 
     it('should get method information', () => {
@@ -196,10 +215,10 @@ it('auth middleware should set statusCode 401', () => {
         httpMethod: 'POST',
         path: '/foo'
       })
-      .then(response => {
-        expect(response.statusCode).to.equal(201);
-        expect(response.body).to.equal('Thanks')
-      });
+        .then(response => {
+          expect(response.statusCode).to.equal(201);
+          expect(response.body).to.equal('Thanks')
+        });
     });
 
     it('should allow 404s', () => {
@@ -207,13 +226,13 @@ it('auth middleware should set statusCode 401', () => {
         httpMethod: 'POST',
         path: '/missing'
       })
-      .then(response => {
-        expect(response.statusCode).to.equal(404);
-      });
+        .then(response => {
+          expect(response.statusCode).to.equal(404);
+        });
     });
   });
 
-  describe('koa-router', function() {
+  describe('koa-router', function () {
 
     beforeEach(() => {
       const router = new Router();
@@ -234,29 +253,29 @@ it('auth middleware should set statusCode 401', () => {
       app.use(router.allowedMethods());
     });
 
-    it('should get when it matches', function() {
+    it('should get when it matches', function () {
       return request(app, {
         httpMethod: 'GET',
         path: '/'
       })
-      .then((response) => {
-        expect(response.statusCode).to.equal(200);
-        expect(response.body).to.equal('hello');
-      });
+        .then((response) => {
+          expect(response.statusCode).to.equal(200);
+          expect(response.body).to.equal('hello');
+        });
     });
 
-    it('should 404 when route does not match', function() {
+    it('should 404 when route does not match', function () {
       return request(app, {
         httpMethod: 'GET',
         path: '/missing'
       })
-      .then((response) => {
-        expect(response.statusCode).to.equal(404);
-        expect(response.headers).to.deep.equal({
-          'content-length': '9',
-          'content-type': 'text/plain; charset=utf-8'
+        .then((response) => {
+          expect(response.statusCode).to.equal(404);
+          expect(response.headers).to.deep.equal({
+            'content-length': '9',
+            'content-type': 'text/plain; charset=utf-8'
+          });
         });
-      });
     });
   });
 
@@ -270,7 +289,7 @@ it('auth middleware should set statusCode 401', () => {
       const body = `{"foo":"bar"}`;
 
       let actual;
-      app.use(async(ctx) => {
+      app.use(async (ctx) => {
         ctx.status = 204;
         ctx.body = {};
         actual = ctx.request.body;
@@ -284,11 +303,11 @@ it('auth middleware should set statusCode 401', () => {
         },
         body
       })
-      .then(() => {
-        expect(actual).to.deep.equal({
-          "foo": "bar"
+        .then(() => {
+          expect(actual).to.deep.equal({
+            "foo": "bar"
+          });
         });
-      });
     });
 
     it('works with gzip (base64 encoded string)', () => {
@@ -304,24 +323,24 @@ it('auth middleware should set statusCode 401', () => {
           resolve(result);
         });
       })
-      .then((zipped) => {
-        return request(app, {
-          httpMethod: 'GET',
-          path: '/',
-          headers: {
-            'Content-Type': 'application/json',
-            'Content-Encoding': 'gzip',
-            'Content-Length': zipped.length,
-          },
-          body: zipped.toString('base64'),
-          isBase64Encoded: true
-        })
-        .then(() => {
-          expect(actual).to.deep.equal({
-            foo: "bar"
-          });
+        .then((zipped) => {
+          return request(app, {
+            httpMethod: 'GET',
+            path: '/',
+            headers: {
+              'Content-Type': 'application/json',
+              'Content-Encoding': 'gzip',
+              'Content-Length': zipped.length,
+            },
+            body: zipped.toString('base64'),
+            isBase64Encoded: true
+          })
+            .then(() => {
+              expect(actual).to.deep.equal({
+                foo: "bar"
+              });
+            });
         });
-      });
     });
 
     it('can handle DELETE with no body', () => {
@@ -337,9 +356,9 @@ it('auth middleware should set statusCode 401', () => {
           'Content-Type': 'application/json'
         }
       })
-      .then(() => {
-        expect(called).to.equal(true);
-      });
+        .then(() => {
+          expect(called).to.equal(true);
+        });
     });
   });
 
@@ -354,9 +373,9 @@ it('auth middleware should set statusCode 401', () => {
         httpMethod: 'GET',
         path: 'file.txt'
       })
-      .then((response) => {
-        expect(response.body).to.equal('this is a test\n');
-      });
+        .then((response) => {
+          expect(response.body).to.equal('this is a test\n');
+        });
     });
   });
 
@@ -379,12 +398,12 @@ it('auth middleware should set statusCode 401', () => {
           'accept-encoding': 'deflate'
         }
       })
-      .then((response) => {
-        const decoded = Buffer.from(response.body, 'base64');
-        const inflated = zlib.inflateSync(decoded);
+        .then((response) => {
+          const decoded = Buffer.from(response.body, 'base64');
+          const inflated = zlib.inflateSync(decoded);
 
-        expect(inflated.toString()).to.equal('this is a test');
-      });
+          expect(inflated.toString()).to.equal('this is a test');
+        });
     });
   });
 });
