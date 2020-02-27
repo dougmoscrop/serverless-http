@@ -62,12 +62,26 @@ module.exports.handler = async (event, context) => {
 ### Other examples
 [json-server-less-λ](https://github.com/pharindoko/json-server-less-lambda) - using serverless-http with json-server and serverless framework in AWS
 
-
 ## Limitations
 
 Your code is running in a serverless environment. You cannot rely on your server being 'up' in the sense that you can/should not use in-memory sessions, web sockets, etc. You are also subject to provider specific restrictions on request/response size, duration, etc.
 
 > Think of this as a familiar way of expressing your app logic, *not* trying to make serverless do something it cannot.
+
+## Compatibility
+
+To help prevent serverless-http interfering with other libraries some features need to be configured manually.
+
+Path parameters can cause conflicts due to many routing libraries using `req.params` for storing path parameters, if you are using
+[proxy+ integration](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-set-up-simple-proxy.html)
+then you may want access to the object from AWS, however you need to prevent conflicts with your in-app router.
+
+Application level routers tend to override the `req.params` key, so by enabling the following option serverless-http will
+bind it to `req.pathParameters` instead so that it can still be accessed manually.
+
+```js
+const handler = serverless(app, { bindParams: true });
+```
 
 ## Contributing
 

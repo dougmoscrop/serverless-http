@@ -150,6 +150,21 @@ describe('spec', () => {
     expect(called.requestContext).to.equal(requestContext);
   });
 
+  it('should set path params', async () => {
+    let called;
+    const handler = serverless((req, res) => {
+      onHeaders(res, () => {
+        called = req;
+      });
+      res.end('');
+    });
+    const requestContext = {};
+    const pathParameters = { hello: 'world' };
+    await handler({ requestContext, pathParameters });
+    expect(!!called).to.be.true
+    expect(called.params).to.equal(pathParameters)
+  })
+
   it('should support transforming the request', async () => {
     let request;
     const event = {}
