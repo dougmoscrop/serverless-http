@@ -170,6 +170,137 @@ describe('spec', () => {
     expect(request.context).to.equal(context);
   });
 
+  it('should transform different payload format requests the same', async () => {
+    let requestV1;
+    let requestV2;
+    const context = {}
+
+    const handler1 = serverless((req, res) => {
+      requestV1 = req;
+      res.end('');
+    }, {
+        request: (req, evt, ctx) => {
+          req.event = evt;
+          req.context = ctx;
+        }
+      });
+
+    const handler2 = serverless((req, res) => {
+      requestV2 = req;
+      res.end('');
+    }, {
+        request: (req, evt, ctx) => {
+          req.event = evt;
+          req.context = ctx;
+        }
+      });
+
+    const v1Event = {
+      version: '1.0',
+      resource: '/my/path',
+      path: '/my/path',
+      httpMethod: 'GET',
+      headers: {
+        'Header1': 'value1',
+        'Header2': 'value2'
+      },
+      queryStringParameters: { parameter1: 'value1', parameter2: 'value' },
+      multiValueQueryStringParameters: { parameter1: ['value1', 'value2'], parameter2: ['value'] },
+      requestContext: {
+        accountId: '123456789012',
+        apiId: 'id',
+        authorizer: {
+          jwt: {
+            claims: { 'claim1': 'value1', 'claim2': 'value2' },
+            scopes: ['scope1', 'scope2']
+          }
+        },
+        domainName: 'id.execute-api.us-east-1.amazonaws.com',
+        domainPrefix: 'id',
+        extendedRequestId: 'request-id',
+        httpMethod: 'GET',
+        path: '/my/path',
+        protocol: 'HTTP/1.1',
+        requestId: 'x-request-id',
+        requestTime: '04/Mar/2020:19:15:17 +0000',
+        requestTimeEpoch: 1583349317135,
+        resourceId: null,
+        resourcePath: '/my/path',
+        stage: '$default',
+        identity: {
+          accessKey: null,
+          accountId: null,
+          caller: null,
+          cognitoAuthenticationProvider: null,
+          cognitoAuthenticationType: null,
+          cognitoIdentityId: null,
+          cognitoIdentityPoolId: null,
+          principalOrgId: null,
+          sourceIp: 'IP',
+          user: null,
+          userAgent: 'user-agent',
+          userArn: null
+        },
+      },
+      pathParameters: null,
+      stageVariables: null,
+      body: 'Hello from Lambda',
+      isBase64Encoded: false
+    };
+
+    const v2Event = {
+      version: '2.0',
+      routeKey: '$default',
+      rawPath: '/my/path',
+      rawQueryString: 'parameter1=value1&parameter1=value2&parameter2=value',
+      cookies: ['cookie1', 'cookie2'],
+      headers: {
+        'Header1': 'value1',
+        'Header2': 'value2'
+      },
+      queryStringParameters: { parameter1: 'value1,value2', parameter2: 'value' },
+      requestContext: {
+        accountId: '123456789012',
+        apiId: 'id',
+        authorizer: {
+          jwt: {
+            claims: { 'claim1': 'value1', 'claim2': 'value2' },
+            scopes: ['scope1', 'scope2']
+          }
+        },
+        domainName: 'id.execute-api.us-east-1.amazonaws.com',
+        domainPrefix: 'id',
+        http: {
+          method: 'GET',
+          path: '/my/path',
+          protocol: 'HTTP/1.1',
+          sourceIp: 'IP',
+          userAgent: 'agent'
+        },
+        requestId: 'x-request-id',
+        routeKey: '$default',
+        stage: '$default',
+        time: '12/Mar/2020:19:03:58 +0000',
+        timeEpoch: 1583348638390
+      },
+      body: 'Hello from Lambda',
+      pathParameters: { 'parameter1': 'value1' },
+      isBase64Encoded: false,
+      stageVariables: { 'stageVariable1': 'value1', 'stageVariable2': 'value2' }
+    };
+
+    await handler1(v1Event, context);
+    await handler2(v2Event, context);
+
+    //Remove the event and context objects as those will be different
+    delete requestV1.event;
+    delete requestV2.event;
+    delete requestV1.requestContext;
+    delete requestV2.requestContext;
+
+    expect(JSON.stringify(requestV1)).to.equal(JSON.stringify(requestV2));
+  });
+
   it('should support transforming the response', async () => {
     const handler = serverless((req, res) => {
       res.end('');
