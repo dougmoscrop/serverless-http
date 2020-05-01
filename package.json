@@ -84,7 +84,6 @@
     "polka": "^0.5.2",
     "reflect-metadata": "^0.1.13",
     "restana": "^4.0.7",
-    "restify": "^8.5.1",
     "sails": "^1.2.3",
     "serverless": "~1.61.3",
     "serverless-offline": "^5.12.1",
