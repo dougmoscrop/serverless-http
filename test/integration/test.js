@@ -46,8 +46,8 @@ function getEndpoints(info) {
 }
 
 const runtimes = [
-  'nodejs8.10',
-  'nodejs10.x'
+  'nodejs10.x',
+  'nodejs12.x'
 ];
 
 runtimes.forEach(runtime => {
