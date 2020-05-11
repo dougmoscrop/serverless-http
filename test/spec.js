@@ -395,4 +395,15 @@ describe('spec', () => {
     await expect(handler({})).to.be.rejectedWith('test');
   });
 
+  it('should supporte res.writeHead', async () => {
+    const handler = serverless((req, res) => {
+      res.writeHead(301, { Location: '/foo', });
+      res.end();
+    });
+
+    const response = await handler({});
+    expect(response.statusCode).to.equal(301);
+    expect(response.headers).to.have.property('location', '/foo');
+  });
+
 });
