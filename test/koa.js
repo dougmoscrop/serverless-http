@@ -126,6 +126,24 @@ describe('koa', () => {
     });
   });
 
+  it('basic middleware should set string body', () => {
+    app.use(async (ctx) => {
+      ctx.body = 'Hello World';
+    });
+
+    return request(app, {
+      httpMethod: 'GET',
+      path: '/',
+      headers: {
+        'X-Request-Id': 'abc'
+      }
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(200);
+      expect(response.body).to.equal('Hello World');
+    });
+  });
+
   it('error middleware should set statusCode and default body', () => {
     app.use(async () => {
       throw new Error('hey man, nice shot');
