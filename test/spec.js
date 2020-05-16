@@ -201,6 +201,7 @@ describe('spec', () => {
       path: '/my/path',
       httpMethod: 'GET',
       headers: {
+        'cookie': "cookie1; cookie2",
         'Header1': 'value1',
         'Header2': 'value2'
       },
