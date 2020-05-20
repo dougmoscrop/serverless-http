@@ -72,3 +72,7 @@ functions:
           path: /binary
           method: ANY
           contentHandling: CONVERT_TO_BINARY
+  root:
+    handler: test/integration/root.handler
+    events:
+      - http: ANY /

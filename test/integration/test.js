@@ -152,6 +152,15 @@ runtimes.forEach(runtime => {
         .expect(200)
         .expect('Content-Type', /json/);
     });
+
+    it('root', () => {
+      const endpoint = getEndpoint('/dev');
+
+      return supertest(endpoint.origin)
+        .get(endpoint.pathname)
+        .expect(200)
+        .expect('Content-Type', /json/);
+    });
   });
 
 });

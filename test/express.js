@@ -196,5 +196,5 @@ describe('express', () => {
       expect(response.statusCode).to.equal(200);
       expect(response.body).to.equal('test');
     });
-  })
+  });
 });
