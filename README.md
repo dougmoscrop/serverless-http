@@ -31,6 +31,7 @@ This module allows you to 'wrap' your API for serverless use. No HTTP server, no
 ### Supported Providers
 
 * AWS
+* Azure
 
 ## Examples
 
@@ -57,6 +58,24 @@ module.exports.handler = async (event, context) => {
   // and here
   return result;
 };
+```
+
+### Usage example using the Express framework with Azure
+
+```javascript
+
+const serverless = require('serverless-http');
+const express = require('express');
+
+const app = express();
+
+app.use(/* register your middleware as normal */);
+
+const handler = serverless(app, { provider: 'azure' });
+module.exports.funcName = async (context, req) => {
+  context.res = await handler(context, req);
+}
+
 ```
 
 ### Other examples
