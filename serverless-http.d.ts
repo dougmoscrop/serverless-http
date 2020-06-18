@@ -23,7 +23,7 @@ declare namespace ServerlessHttp {
   export type Handler = (
     event: AWSLambda.APIGatewayProxyEvent | AWSLambda.APIGatewayProxyEventV2,
     context: AWSLambda.Context
-  ) => Promise<AWSLambda.APIGatewayProxyResult>;
+  ) => Promise<AWSLambda.APIGatewayProxyResult | AWSLambda.APIGatewayProxyStructuredResultV2>;
 }
 
 /**

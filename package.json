@@ -51,7 +51,7 @@
   "homepage": "https://github.com/dougmoscrop/serverless-http",
   "license": "MIT",
   "optionalDependencies": {
-    "@types/aws-lambda": "^8.10.19"
+    "@types/aws-lambda": "^8.10.56"
   },
   "devDependencies": {
     "@loopback/rest": "^1.25.1",
