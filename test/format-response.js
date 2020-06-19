@@ -144,4 +144,24 @@ describe('format-response', function () {
       .true;
   });
 
+  it("v2Event: cookies array in return object has correct values", () => {
+    const response = new Response({});
+    response.headers["set-cookie"] = ["foo=bar", "hail=hydra"];
+
+    expect(formatResponse(v2Event, response, {}).cookies).to.eql([
+      "foo=bar",
+      "hail=hydra",
+    ]);
+  });
+
+  it("v1Event: cookies array in multiValueHeaders object in return object has correct values", () => {
+    const response = new Response({});
+    response.headers["set-cookie"] = ["foo=bar", "hail=hydra"];
+
+    expect(formatResponse(v1Event, response, {}).multiValueHeaders['set-cookie']).to.eql([
+      "foo=bar",
+      "hail=hydra",
+    ]);
+  });
+
 });
