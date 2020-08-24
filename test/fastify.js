@@ -20,7 +20,7 @@ describe('fastify', () => {
     return request(app, {
       httpMethod: 'GET',
       path: '/'
-    })
+    }, { requestId: false })
     .then(res => {
       expect(res.statusCode).to.equal(200);
       expect(res.body).to.equal('hello world');
