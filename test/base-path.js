@@ -5,12 +5,16 @@ const expect = require('chai').expect;
 const request = require('./util/request');
 
 const expectedFooResponse = 'foo!';
+const expectedBarResponse = 'bar!';
 
 describe('base path', () => {
   let fooApp;
 
   beforeEach(() => {
     fooApp = express();
+    fooApp.get('/', (req, res) => {
+      return res.send(expectedBarResponse);
+    });
     fooApp.get('/test', (req, res) => {
       return res.send(expectedFooResponse);
     });
@@ -52,6 +56,25 @@ describe('base path', () => {
         .then(response => {
           expect(response.statusCode).to.equal(200);
           expect(response.body).to.equal(expectedFooResponse)
+        });
+    });
+  });
+
+  [
+    '/dev/foo/',
+    '/foo/',
+    '/foo',
+    '/___/v1/foo/',
+    '/___/v1/foo'
+  ].map(testCase => {
+    it(`should work locally and with api gateway root path (${testCase})`, () => {
+      return request(fooApp, {
+        httpMethod: 'GET',
+        path: testCase
+      }, { basePath: '/foo' })
+        .then(response => {
+          expect(response.statusCode).to.equal(200);
+          expect(response.body).to.equal(expectedBarResponse)
         });
     });
   })
