@@ -20,7 +20,7 @@ This module allows you to 'wrap' your API for serverless use. No HTTP server, no
 * Connect
 * Express
 * Koa
-* Restana *
+* Restana
 * Sails *
 * Hapi *
 * Fastify *
