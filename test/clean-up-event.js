@@ -1,6 +1,6 @@
 'use strict';
 
-const cleanUpEvent = require('../lib/provider/aws/clean-up-event.js');
+const cleanUpEvent = require('../lib/provider/aws//api-gw/clean-up-event.js');
 const expect = require('chai').expect;
 
 describe('clean up event', () => {
