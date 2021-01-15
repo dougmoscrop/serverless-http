@@ -168,13 +168,13 @@ describe('clean up event', () => {
       version: '2.0',
       routeKey: '$default',
       rawPath: '/my/path',
-      rawQueryString: 'parameter%231=value%231&parameter%231=value%232&parameter2=value',
+      rawQueryString: 'parameter%231=value%231&parameter%231=value%232&parameter2=value&parameter3=hello+world',
       cookies: ['cookie1', 'cookie2'],
       headers: {
         'Header1': 'value1',
         'Header2': 'value2'
       },
-      queryStringParameters: { 'parameter%231': 'value%231,value%232', 'parameter2': 'value' },
+      queryStringParameters: { 'parameter%231': 'value%231,value%232', 'parameter2': 'value', 'parameter3': 'hello+world' },
       requestContext: {
         accountId: '123456789012',
         apiId: 'api-id',
@@ -215,10 +215,10 @@ describe('clean up event', () => {
       version: '2.0',
       routeKey: '$default',
       rawPath: '/path',
-      rawQueryString: 'parameter%231=value%231&parameter%231=value%232&parameter2=value',
+      rawQueryString: 'parameter%231=value%231&parameter%231=value%232&parameter2=value&parameter3=hello+world',
       cookies: ['cookie1', 'cookie2'],
       headers: { Header1: 'value1', Header2: 'value2' },
-      queryStringParameters: { 'parameter#1': 'value#1,value#2', parameter2: 'value' },
+      queryStringParameters: { 'parameter#1': 'value#1,value#2', parameter2: 'value', parameter3: 'hello world' },
       requestContext: {
         accountId: '123456789012',
         apiId: 'api-id',
