@@ -298,6 +298,8 @@ describe('spec', () => {
     delete requestV2.event;
     delete requestV1.requestContext;
     delete requestV2.requestContext;
+    delete requestV1.apiGateway;
+    delete requestV2.apiGateway;
 
     expect(JSON.stringify(requestV1)).to.equal(JSON.stringify(requestV2));
   });
@@ -331,6 +333,24 @@ describe('spec', () => {
 
     await handler({ body });
     expect(length).to.equal(13);
+  });
+
+  it('should add apiGateway with event/context to req', async () => {
+    const body = `{"foo":"অ"}`;
+
+    let captured;
+
+    const handler = serverless((req, res) => {
+      captured = req;
+      res.end('');
+    });
+
+    const event = { body };
+    const context = { test: true };
+
+    await handler(event, context);
+
+    expect(captured.apiGateway).to.deep.equal({ event, context });
   });
 
   it('should throw if event.body is a number', async () => {
