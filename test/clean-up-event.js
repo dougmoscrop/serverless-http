@@ -1,6 +1,10 @@
 'use strict';
 
-const cleanUpEvent = require('../lib/provider/aws//api-gw/clean-up-event.js');
+const cleanUpEvent = require('../lib/provider/aws/api-gw/clean-up-event');
+const cleanUpEventLambdaEdge = require('../lib/provider/aws/lambda-edge-origin-request/clean-up-event');
+
+const edgeOriginRequest = require('./fixtures/origin-request.json');
+
 const expect = require('chai').expect;
 
 describe('clean up event', () => {
@@ -340,5 +344,9 @@ describe('clean up event', () => {
       stageVariables: { stageVariable1: 'value1', stageVariable2: 'value2' }
     });
 
+  });
+
+  it('should clean up lambda edge origin payload format correctly', () => {
+    cleanUpEventLambdaEdge(edgeOriginRequest, { basePath: '/my' });
   });
 });
