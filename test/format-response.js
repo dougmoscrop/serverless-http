@@ -1,6 +1,6 @@
 'use strict';
 
-const formatResponse = require('../lib/provider/aws/format-response');
+const formatResponse = require('../lib/provider/aws/api-gw/format-response');
 const Response = require('../lib/response');
 const expect = require('chai').expect;
 

@@ -58,6 +58,17 @@ describe('base path', () => {
           expect(response.body).to.equal(expectedFooResponse)
         });
     });
+
+    it(`should work with a lambda-edge-origin-request  (${testCase})`, () => {
+      return request(fooApp, {
+        method: 'GET',
+        uri: testCase,
+      }, { basePath: '/foo', provider: 'aws', type: 'lambda-edge-origin-request' })
+        .then(response => {
+          expect(response.statusCode).to.equal(200);
+          expect(response.body).to.equal(expectedFooResponse);
+        });
+    });
   });
 
   [
