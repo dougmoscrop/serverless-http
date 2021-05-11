@@ -39,9 +39,9 @@ describe('format-response', function () {
       stageVariables: null,
       body: 'Hello from Lambda!',
       isBase64Encoded: true
-};
+  };
     
-// Construct dummy v2 event
+    // Construct dummy v2 event
     const v2Event = {
       version: '2.0',
       routeKey: '$default',
@@ -83,36 +83,47 @@ describe('format-response', function () {
       stageVariables: { 'stageVariable1': 'value1', 'stageVariable2': 'value2' }
     };
 
-  it('throws on chunked transfer-encoding on v1Event', () => {
-    const response = new Response({});
-    response.setHeader('transfer-encoding', 'chunked');
-    expect(() => formatResponse(v1Event, response, {})).to.throw(Error, 'chunked encoding not supported');
+  it('parses chunked body on chunked transfer-encoding on v1Event', () => {
+    const chunkedBody = '7\r\nCombine\r\n4\r\nThis\r\n4\r\nText\r\n0\r\n\r\n';
+    const response = Response.from({
+      body: chunkedBody,
+      headers: { 'transfer-encoding': 'chunked'},
+      statusCode: 200
+    })
+    expect(formatResponse(v1Event, response, {}).body).to.eql('CombineThisText');
   });
 
-  it('throws on res.chunkedEncoding on v1Event', () => {
-    const response = new Response({});
+  it('parses chunked body on res.chunkedEncoding on v1Event', () => {
+    const chunkedBody = '7\r\nCombine\r\n4\r\nThis\r\n4\r\nText\r\n0\r\n\r\n';
+    const response = Response.from({
+      body: chunkedBody,
+      statusCode: 200
+    })
     response.chunkedEncoding = true;
 
-    expect(() => formatResponse(v1Event, response, {})).to.throw(Error, 'chunked encoding not supported');
+    expect(formatResponse(v1Event, response, {}).body).to.eql('CombineThisText');
+
   });
 
-  it("throws on chunked transfer-encoding on v2Event", () => {
-    const response = new Response({});
-    response.setHeader("transfer-encoding", "chunked");
-    expect(() => formatResponse(v2Event, response, {})).to.throw(
-      Error,
-      "chunked encoding not supported"
-    );
+  it("parses chunked body on transfer-encoding on v2Event", () => {
+    const chunkedBody = '7\r\nCombine\r\n4\r\nThis\r\n4\r\nText\r\n0\r\n\r\n';
+    const response = Response.from({
+      body: chunkedBody,
+      headers: { 'transfer-encoding': 'chunked'},
+      statusCode: 200
+    })
+    expect(formatResponse(v2Event, response, {}).body).to.eql('CombineThisText');
+
   });
 
-  it("throws on res.chunkedEncoding on v2Event", () => {
-    const response = new Response({});
+  it("parses chunked body on res.chunkedEncoding on v2Event", () => {
+    const chunkedBody = '7\r\nCombine\r\n4\r\nThis\r\n4\r\nText\r\n0\r\n\r\n';
+    const response = Response.from({
+      body: chunkedBody,
+      statusCode: 200
+    })
     response.chunkedEncoding = true;
-
-    expect(() => formatResponse(v2Event, response, {})).to.throw(
-      Error,
-      "chunked encoding not supported"
-    );
+    expect(formatResponse(v1Event, response, {}).body).to.eql('CombineThisText');
   });
 
   it("v2Event: return object contains cookies", () => {
