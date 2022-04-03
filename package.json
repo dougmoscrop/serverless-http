@@ -5,7 +5,7 @@
   "main": "serverless-http.js",
   "types": "serverless-http.d.ts",
   "engines": {
-    "node": ">=8.0"
+    "node": ">=12.0"
   },
   "directories": {
     "test": "test"
@@ -15,7 +15,7 @@
     "url": "https://github.com/dougmoscrop/serverless-http"
   },
   "scripts": {
-    "pretest": "tsc --strict --noEmit test/typecheck.ts",
+    "pretest": "tsc --strict --skipLibCheck --noEmit test/typecheck.ts",
     "test": "nyc mocha",
     "posttest": "eslint lib test",
     "test:integration": "mocha test/integration/test.js",
@@ -50,33 +50,29 @@
   ],
   "homepage": "https://github.com/dougmoscrop/serverless-http",
   "license": "MIT",
-  "optionalDependencies": {
-    "@types/aws-lambda": "^8.10.56"
-  },
   "devDependencies": {
-    "@loopback/rest": "^1.25.1",
+    "@loopback/rest": "^11.1.2",
     "@types/koa": "^2.11.0",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cookie-parser": "^1.4.4",
-    "eslint": "^6.8.0",
-    "eslint-plugin-mocha": "^6.2.2",
+    "eslint": "^8.12.0",
+    "eslint-plugin-mocha": "^10.0.3",
     "express": "^4.17.1",
-    "fastify": "^2.11.0",
+    "fastify": "^3.27.4",
     "get-stream": "^5.1.0",
     "hapi": "^18.1.0",
-    "intercept-stdout": "^0.1.2",
-    "inversify": "^5.0.1",
+    "inversify": "^6.0.1",
     "inversify-express-utils": "^6.3.2",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
-    "koa-compress": "^3.0.0",
+    "koa-compress": "^5.1.0",
     "koa-route": "^3.2.0",
-    "koa-router": "^8.0.6",
+    "koa-router": "^10.1.1",
     "koa-static": "^5.0.0",
-    "lambda-log": "^2.3.1",
-    "mocha": "^7.0.0",
+    "lambda-log": "^3.1.0",
+    "mocha": "^9.2.2",
     "morgan": "^1.9.1",
     "nyc": "^15.0.0",
     "on-finished": "^2.3.0",
@@ -85,14 +81,13 @@
     "reflect-metadata": "^0.1.13",
     "restana": "^4.0.7",
     "sails": "^1.2.3",
-    "serverless": "~1.61.3",
-    "serverless-offline": "^5.12.1",
-    "serverless-plugin-common-excludes": "^3.0.0",
+    "serverless": "^3.10.2",
+    "serverless-offline": "^8.5.0",
+    "serverless-plugin-common-excludes": "^4.0.0",
     "serverless-plugin-custom-binary": "^2.0.0",
-    "serverless-plugin-include-dependencies": "^4.0.1",
-    "sinon": "^8.1.1",
-    "supertest": "^4.0.2",
-    "typescript": "^3.7.5"
-  },
-  "dependencies": {}
+    "serverless-plugin-include-dependencies": "^5.0.0",
+    "sinon": "^13.0.1",
+    "supertest": "^6.2.2",
+    "typescript": "^4.6.3"
+  }
 }

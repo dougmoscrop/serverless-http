@@ -5,3 +5,4 @@ coverage
 yarn.lock
 .vscode
 .serverless/
+dist/

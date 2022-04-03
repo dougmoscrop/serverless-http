@@ -5,29 +5,14 @@
 const { URL } = require('url');
 const path = require('path');
 const fs = require('fs');
+const { execSync } = require('child_process')
 
 const { expect } = require('chai');
-const Serverless = require('serverless');
-const intercept = require('intercept-stdout');
 const supertest = require('supertest');
 
 function run(cmd) {
-  // hack argv so serverless runs a command
-  process.argv = process.argv.slice(0, 2).concat(cmd.split(' '));
-
-  const serverless = new Serverless({});
-
-  return serverless.init()
-    .then(() => {
-      const messages = [];
-      const unhook = intercept(text => messages.push(text));
-
-      return serverless.run()
-        .then(() => {
-          unhook();
-          return messages;
-        });
-    });
+   const res = execSync(`npx serverless ${cmd}`)
+   return res.toString()
 }
 
 function getEndpoints(info) {
@@ -46,8 +31,8 @@ function getEndpoints(info) {
 }
 
 const runtimes = [
-  'nodejs10.x',
-  'nodejs12.x'
+  'nodejs12.x',
+  'nodejs14.x',
 ];
 
 runtimes.forEach(runtime => {
@@ -63,13 +48,14 @@ runtimes.forEach(runtime => {
 
     before(async function() {
       this.timeout(0);
-      await run(`deploy --runtime=${runtime}`);
+      process.env.RUNTIME = runtime
+      await run('deploy');
     });
 
     before(async function() {
       this.timeout(10000);
       const info = await run('info');
-      endpoints = await getEndpoints(info);
+      endpoints = await getEndpoints(info.split('\r?\n'));
     });
 
     describe('koa', () => {
