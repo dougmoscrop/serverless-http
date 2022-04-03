@@ -31,7 +31,7 @@ This module allows you to 'wrap' your API for serverless use. No HTTP server, no
 ### Supported Providers
 
 * AWS
-* Azure
+* Azure (Experimental, untested, probably outdated)
 
 ## Examples
 
