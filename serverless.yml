@@ -2,12 +2,11 @@ service: serverless-http-test
 
 provider:
   name: aws
-  runtime: ${opt:runtime}
+  runtime: ${env:RUNTIME}
 
 plugins:
   - serverless-plugin-custom-binary
   - serverless-plugin-include-dependencies
-  - serverless-plugin-common-excludes
   - serverless-offline
 
 custom:
@@ -17,11 +16,11 @@ custom:
 
 package:
   excludeDevDependencies: false
-  include:
-    - test/integration/**
-  exclude:
-    - test.js
-    - run.sh
+  patterns:
+    - 'test/integration/**'
+    - '!test.js'
+    - '!run.sh'
+    - 'test/integration/image.png'
 
 functions:
   compare:
@@ -71,7 +70,6 @@ functions:
       - http:
           path: /binary
           method: ANY
-          contentHandling: CONVERT_TO_BINARY
   root:
     handler: test/integration/root.handler
     events:
