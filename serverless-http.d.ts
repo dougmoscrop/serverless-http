@@ -22,9 +22,9 @@ declare namespace ServerlessHttp {
    * AWS Lambda APIGatewayProxyHandler-like handler.
    */
   export type Handler = (
-    event: AWSLambda.APIGatewayProxyEvent,
+    event: AWSLambda.APIGatewayProxyEvent | AWSLambda.APIGatewayProxyEventV2,
     context: AWSLambda.Context
-  ) => Promise<AWSLambda.APIGatewayProxyResult>;
+  ) => Promise<AWSLambda.APIGatewayProxyResult | AWSLambda.APIGatewayProxyStructuredResultV2>;
 
   export type AzureHandler = (
     context: Context,

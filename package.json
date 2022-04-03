@@ -1,6 +1,6 @@
 {
   "name": "serverless-http",
-  "version": "2.3.1",
+  "version": "2.7.0",
   "description": "Use existing web application frameworks in serverless environments",
   "main": "serverless-http.js",
   "types": "serverless-http.d.ts",
@@ -45,13 +45,14 @@
     "Filip Skokan (https://github.com/panva)",
     "Kevin Tonon (https://github.com/ktonon)",
     "Mark Vayngrib (https://github.com/mvayngrib)",
-    "Tamás Máhr (https://github.com/tamasmahr)"
+    "Tamás Máhr (https://github.com/tamasmahr)",
+    "Daniel Martin (https://github.com/daniel-ac-martin)"
   ],
   "homepage": "https://github.com/dougmoscrop/serverless-http",
   "license": "MIT",
   "optionalDependencies": {
     "@azure/functions": "^1.0.3",
-    "@types/aws-lambda": "^8.10.19"
+    "@types/aws-lambda": "^8.10.56"
   },
   "devDependencies": {
     "@loopback/rest": "^1.25.1",

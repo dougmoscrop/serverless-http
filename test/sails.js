@@ -7,7 +7,8 @@ const sails = require('sails'),
 describe('sails', () => {
   let app;
 
-  beforeEach(function(done) {
+  beforeEach(function (done) {
+    this.timeout(6000);
     app = sails.load({
       hooks: {
         session: false

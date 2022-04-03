@@ -46,8 +46,8 @@ function getEndpoints(info) {
 }
 
 const runtimes = [
-  'nodejs8.10',
-  'nodejs10.x'
+  'nodejs10.x',
+  'nodejs12.x'
 ];
 
 runtimes.forEach(runtime => {
@@ -146,6 +146,15 @@ runtimes.forEach(runtime => {
 
     it('timer', () => {
       const endpoint = getEndpoint('/dev/timer');
+
+      return supertest(endpoint.origin)
+        .get(endpoint.pathname)
+        .expect(200)
+        .expect('Content-Type', /json/);
+    });
+
+    it('root', () => {
+      const endpoint = getEndpoint('/dev');
 
       return supertest(endpoint.origin)
         .get(endpoint.pathname)
