@@ -12,3 +12,4 @@ examples/
 .npmignore
 .travis.yml
 serverless.yml
+serverless-http.d.ts
