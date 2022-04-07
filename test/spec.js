@@ -427,4 +427,22 @@ describe('spec', () => {
     expect(response.headers).to.have.property('location', '/foo');
   });
 
+  it('should support UInt8Array data', async () => {
+    const expected = "hello";
+
+    const uint8Array = Uint8Array.from(
+      Array.from(expected).map(
+        ch => ch.charCodeAt(0)
+      )
+    );
+
+    const handler = serverless((req, res) => {
+      res.end(uint8Array);
+    });
+
+    const response = await handler({});
+
+    expect(response.body).to.equal(expected);
+  });
+
 });
