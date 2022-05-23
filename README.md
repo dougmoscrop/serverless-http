@@ -2,15 +2,33 @@
 
 [![Build Status](https://travis-ci.org/dougmoscrop/serverless-http.svg?branch=master)](https://travis-ci.org/dougmoscrop/serverless-http)
 
-## 2.0
-
-The 2.0 release moves to async/await and requires Node 8+.
-
-All frameworks have been updated to their latest versions.
-
 ## Description
 
 This module allows you to 'wrap' your API for serverless use. No HTTP server, no ports or sockets. Just your code in the same execution pipeline you are already familiar with.
+
+## Sponsors
+
+Thank you to Upstash for reaching out to sponsor this project!
+
+<table>
+<tr>
+<td>
+  <img width="1000" height="0">
+  <a href="https://upstash.com/?utm_source=serverless-http" >
+  <img src="https://raw.githubusercontent.com/upstash/sponsorship/master/redis.png" alt="Upstash" width="260" align="right">
+  </a>
+<h3>Upstash: Serverless Database for Redis</h3>
+
+  <ul>
+    <li>Serverless Redis with global replication and durable storage</li>
+    <li>Price scales to zero with per request pricing</li>
+    <li>Built-in REST API designed for serverless and edge functions</li>
+  </ul>
+  
+[Start for free in 30 seconds!](https://upstash.com/?utm_source=serverless-http)
+</td>
+</tr>
+</table>
 
 ## Support
 
@@ -96,26 +114,3 @@ Pull requests are welcome! Especially test scenarios for different situations an
 
 Here are some [more detailed examples](./docs/EXAMPLES.md) and [advanced configuration options](./docs/ADVANCED.md) as well as [provider-specific documentation](./docs/PROVIDERS.md)
 
-## Sponsors
-
-Thank you to Upstash for reaching out to sponsor this project!
-
-<table>
-<tr>
-<td>
-  <img width="1000" height="0">
-  <a href="https://upstash.com/?utm_source=serverless-http" >
-  <img src="https://raw.githubusercontent.com/upstash/sponsorship/master/redis.png" alt="Upstash" width="260" align="right">
-  </a>
-<h3>Upstash: Serverless Database for Redis</h3>
-
-  <ul>
-    <li>Serverless Redis with global replication and durable storage</li>
-    <li>Price scales to zero with per request pricing</li>
-    <li>Built-in REST API designed for serverless and edge functions</li>
-  </ul>
-  
-[Start for free in 30 seconds!](https://upstash.com/?utm_source=serverless-http)
-</td>
-</tr>
-</table>
