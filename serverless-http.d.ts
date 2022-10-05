@@ -21,7 +21,8 @@ declare namespace ServerlessHttp {
     requestId?: string,
     request?: Object | Function,
     response?: Object | Function,
-    binary?: boolean | Function | string | string[]
+    binary?: boolean | Function | string | string[],
+    basePath?: string
   }
   /**
    * AWS Lambda APIGatewayProxyHandler-like handler.
