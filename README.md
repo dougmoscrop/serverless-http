@@ -35,6 +35,7 @@ Thank you to Upstash for reaching out to sponsor this project!
 ### Supported Frameworks
 (* Experimental)
 
+* Node (http.createServer)
 * Connect
 * Express
 * Koa
