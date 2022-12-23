@@ -3,7 +3,8 @@
 const url = require('url'),
   fs = require('fs'),
   expect = require('chai').expect,
-  request = require('./util/request');
+  request = require('./util/request'),
+  sinon = require('sinon');
 
 describe('generic http listener', () => {
   let app;
@@ -151,6 +152,23 @@ describe('generic http listener', () => {
         location: '/redirect',
         accept: '*/*'
       });
+    });
+  });
+
+  it('should emit close once', () => {
+    const stub = sinon.stub().returns(true);
+    app = function (req, res) {
+      res.on('close', stub);
+      res.writeHead(200);
+      res.emit('finish'); // Test multiple finish deliveries
+      res.end();
+    };
+
+    return request(app, {
+      httpMethod: 'GET',
+      path: '/',
+    }).then(() => {
+      expect(stub.calledOnce).to.be.true;
     });
   });
 });
