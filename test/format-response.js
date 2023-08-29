@@ -83,6 +83,47 @@ describe('format-response', function () {
       stageVariables: { 'stageVariable1': 'value1', 'stageVariable2': 'value2' }
     };
 
+  // Construct dummy ALB event
+  const albEvent = {
+    "requestContext": {
+      "elb": {
+        "targetGroupArn": "arn:aws:elasticloadbalancing:region:123456789012:targetgroup/my-target-group/6d0ecf831eec9f09"
+      }
+    },
+    "httpMethod": "GET",
+    "path": "/",
+    "queryStringParameters": {
+      "myKey": "val2" 
+    },
+    "headers": {
+      'Header1': 'value1',
+      'Header2': 'value2'
+    },
+    "isBase64Encoded": false,
+    "body": 'Hello from Lambda'
+  }
+
+  // Construct dummy ALB event
+  const albWithMultiValueHeadersEvent = {
+    "requestContext": {
+      "elb": {
+        "targetGroupArn": "arn:aws:elasticloadbalancing:region:123456789012:targetgroup/my-target-group/6d0ecf831eec9f09"
+      }
+    },
+    "httpMethod": "GET",
+    "path": "/",
+    "multiValueQueryStringParameters": { 
+      "myKey": ["val1", "val2"]
+    },
+    "multiValueHeaders": {
+      'Header1': ['value1'],
+      'Header2': ['value2']
+    },
+    "isBase64Encoded": false,
+    "body": 'Hello from Lambda'
+  }
+
+
   it('parses chunked body on chunked transfer-encoding on v1Event', () => {
     const chunkedBody = '7\r\nCombine\r\n4\r\nThis\r\n4\r\nText\r\n0\r\n\r\n';
     const response = Response.from({
@@ -174,5 +215,25 @@ describe('format-response', function () {
       "hail=hydra",
     ]);
   });
+
+  it('albEvent: handles a simple alb event', () => {
+    const response = new Response({});
+    response.headers["set-cookie"] = "foo=bar";
+    response.headers["content-type"] = "application/json";
+
+    const result = formatResponse(albEvent, response, {});
+    expect(result.headers["set-cookie"]).to.eq("foo=bar");
+    expect(result.headers["content-type"]).to.eq("application/json");
+  })
+
+  it('albEvent: handles alb event when multi-value headers are set', () => {
+    const response = new Response({});
+    response.headers["set-cookie"] = ["foo=bar", "hail=hydra"];
+    response.headers["content-type"] = "application/json";
+
+    const result = formatResponse(albWithMultiValueHeadersEvent, response, {});
+    expect(result.multiValueHeaders["set-cookie"]).to.deep.equal(["foo=bar", "hail=hydra"]);
+    expect(result.multiValueHeaders["content-type"]).to.deep.equal(["application/json"]);
+  })
 
 });
