@@ -82,7 +82,7 @@
     "restana": "^4.0.7",
     "sails": "^1.2.3",
     "serverless": "^3.10.2",
-    "serverless-offline": "^8.5.0",
+    "serverless-offline": "^12.0.4",
     "serverless-plugin-common-excludes": "^4.0.0",
     "serverless-plugin-custom-binary": "^2.0.0",
     "serverless-plugin-include-dependencies": "^5.0.0",
