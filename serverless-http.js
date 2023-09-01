@@ -18,6 +18,7 @@ module.exports = function (app, opts) {
     await finish(request, options.request, ...context);
     const response = await framework(request);
     await finish(response, options.response, ...context);
+    response.emit('close');
     return response;
   });
 };
