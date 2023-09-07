@@ -5,7 +5,7 @@ const fs = require('fs');
 
 exports.runtimes = [
   'nodejs12.x',
-  // 'nodejs14.x',
+  'nodejs14.x',
 ];
 
 
