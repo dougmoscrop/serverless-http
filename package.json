@@ -18,7 +18,8 @@
     "pretest": "tsc --strict --skipLibCheck --noEmit test/typecheck.ts",
     "test": "nyc mocha",
     "posttest": "eslint lib test",
-    "test:integration": "mocha test/integration/test.js --exit",
+    "test:integration:offline": "mocha test/integration/test-offline.js --exit",
+    "test:integration:aws": "mocha test/integration/test-aws.js --exit",
     "postpublish": "git push origin master --tags"
   },
   "keywords": [
