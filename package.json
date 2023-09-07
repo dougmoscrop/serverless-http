@@ -18,7 +18,7 @@
     "pretest": "tsc --strict --skipLibCheck --noEmit test/typecheck.ts",
     "test": "nyc mocha",
     "posttest": "eslint lib test",
-    "test:integration": "mocha test/integration/test.js",
+    "test:integration": "mocha test/integration/test.js --exit",
     "postpublish": "git push origin master --tags"
   },
   "keywords": [
@@ -88,6 +88,7 @@
     "serverless-plugin-include-dependencies": "^5.0.0",
     "sinon": "^13.0.1",
     "supertest": "^6.2.2",
+    "tree-kill": "^1.2.2",
     "typescript": "^4.6.3"
   }
 }
