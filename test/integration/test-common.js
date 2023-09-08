@@ -14,8 +14,21 @@ exports.shouldBehaveLikeIntegration = function() {
     this.getEndpoint = (path) => {
       return this.endpoints.find(e => e.pathname === path);
     };
+    this.logs = "";
+    if (this.subprocess !== undefined) {
+      this.subprocess.stdout.on("data", (data) => {
+        this.logs += data;
+      });
+      this.subprocess.stderr.on("data", (data) => {
+        this.logs += data;
+      });
+    }
   });
-  
+
+  beforeEach(function() {
+    this.logs = ""; // clear any previous test logs
+  })
+
   describe('koa', function() {
     it('get', function()  {
       const endpoint = this.getEndpoint('/dev/koa');
@@ -94,6 +107,28 @@ exports.shouldBehaveLikeIntegration = function() {
       .get(endpoint.pathname)
       .expect(200)
       .expect('Content-Type', /json/);
+  });
+
+  it('pino', function(done) {
+    const endpoint = this.getEndpoint('/dev/pino');
+
+    supertest(endpoint.origin)
+      .get(endpoint.pathname)
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .end(() => {
+        // In the AWS case, we have no logs
+        if (this.logs === "") {
+          return done();
+        }
+        // Should only log once
+        const matchCount = (this.logs.match(/"statusCode":200/g) || []).length;
+        if (matchCount !==1) {
+          console.log("logs", this.logs);
+        }
+        expect(matchCount).to.equal(1);
+        return done();
+      });
   });
 
   // FIXME: Broken currently https://github.com/dougmoscrop/serverless-http/issues/270

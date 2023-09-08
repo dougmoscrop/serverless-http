@@ -78,6 +78,8 @@
     "nyc": "^15.0.0",
     "on-finished": "^2.3.0",
     "on-headers": "^1.0.2",
+    "pino": "^8.15.0",
+    "pino-http": "^8.5.0",
     "polka": "^0.5.2",
     "reflect-metadata": "^0.1.13",
     "restana": "^4.0.7",
