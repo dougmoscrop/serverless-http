@@ -70,6 +70,10 @@ functions:
       - http:
           path: /binary
           method: ANY
+  pino:
+    handler: test/integration/pino.handler
+    events:
+      - http: ANY /pino          
   root:
     handler: test/integration/root.handler
     events:

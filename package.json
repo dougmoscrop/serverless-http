@@ -18,7 +18,8 @@
     "pretest": "tsc --strict --skipLibCheck --noEmit test/typecheck.ts",
     "test": "nyc mocha",
     "posttest": "eslint lib test",
-    "test:integration": "mocha test/integration/test.js",
+    "test:integration:offline": "mocha test/integration/test-offline.js --exit",
+    "test:integration:aws": "mocha test/integration/test-aws.js --exit",
     "postpublish": "git push origin master --tags"
   },
   "keywords": [
@@ -77,6 +78,8 @@
     "nyc": "^15.0.0",
     "on-finished": "^2.3.0",
     "on-headers": "^1.0.2",
+    "pino": "^8.15.0",
+    "pino-http": "^8.5.0",
     "polka": "^0.5.2",
     "reflect-metadata": "^0.1.13",
     "restana": "^4.0.7",
@@ -88,6 +91,7 @@
     "serverless-plugin-include-dependencies": "^5.0.0",
     "sinon": "^13.0.1",
     "supertest": "^6.2.2",
+    "tree-kill": "^1.2.2",
     "typescript": "^4.6.3"
   }
 }
