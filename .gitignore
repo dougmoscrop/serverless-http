@@ -6,3 +6,4 @@ yarn.lock
 .vscode
 .serverless/
 dist/
+.idea
