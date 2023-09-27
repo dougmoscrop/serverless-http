@@ -95,7 +95,7 @@ module.exports.funcName = async (context, req) => {
 
 ```
 
-### Usage example using the Koa framework with AWS [Bun](https://github.com/oven-sh/bun/blob/main/packages/bun-lambda) Runtime
+### Usage example using the Koa framework with [AWS Bun Runtime](https://github.com/oven-sh/bun/blob/main/packages/bun-lambda)
 
 ```javascript
 const serverless = require('serverless-http');
@@ -105,10 +105,6 @@ const app = new Koa();
 
 app.use(/* register your middleware as normal */);
 
-// this is it!
-module.exports.handler = serverless(app);
-
-// or as a promise
 const handler = serverless(app, { provider: 'bunAws' });
 module.exports.handler = async (event, context) => {
   // you can do other things here
