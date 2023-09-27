@@ -1,3 +1,5 @@
+import { Server } from "http";
+
 declare namespace ServerlessHttp {
   export interface FrameworkApplication {
     callback: Function;
@@ -11,10 +13,10 @@ declare namespace ServerlessHttp {
   }
 
   /**
-   * Handler-compatible function or application.
+   * Handler-compatible function, application or plain http server.
    */
-  export type Application = Function | Partial<FrameworkApplication>;
-  export type Result = Function | Partial<FrameworkApplication>;
+  export type Application = Function | Partial<FrameworkApplication> | Server;
+  export type Result = Function | Partial<FrameworkApplication> | Server;
 
   export type Options = {
     provider?: 'aws' | 'azure'
