@@ -17,7 +17,7 @@ declare namespace ServerlessHttp {
   export type Result = Function | Partial<FrameworkApplication>;
 
   export type Options = {
-    provider?: 'aws' | 'azure'
+    provider?: 'aws' | 'azure' | 'bunAws',
     requestId?: string,
     request?: Object | Function,
     response?: Object | Function,
