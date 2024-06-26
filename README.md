@@ -48,7 +48,16 @@ Thank you to Upstash for reaching out to sponsor this project!
 ### Supported Providers
 
 * AWS
+* [Genezio](https://genezio.com/deploy-nodejs-express-on-genezio-serverless/)
 * Azure (Experimental, untested, probably outdated)
+
+## Deploy a Hello Word on Genezio
+:rocket: You can deploy your own hello world example using the Express framework to Genezio with one click:
+
+[![Deploy to Genezio](https://raw.githubusercontent.com/Genez-io/graphics/main/svg/deploy-button.svg)](https://app.genez.io/start/deploy?repository=https://github.com/Genez-io/express-getting-started)
+
+
+
 
 ## Examples
 
