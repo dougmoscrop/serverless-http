@@ -4,6 +4,8 @@
 
 This module allows you to 'wrap' your API for serverless use. No HTTP server, no ports or sockets. Just your code in the same execution pipeline you are already familiar with.
 
+Note: v4.0.0 doesn't intentionally intorudce any breaking changes, but uses a PassThrough stream internally instead of a stub - however, this is a sensitive area, so in order to avoid unintentional breaks, a semver major version was used. You should hopefully not have to change anything, but test thoroughly please.
+
 ## Sponsors
 
 Thank you to Upstash for reaching out to sponsor this project!
