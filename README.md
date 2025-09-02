@@ -106,6 +106,27 @@ module.exports.funcName = async (context, req) => {
 
 ```
 
+### Usage example using the Express framework with AWS
+
+```javascript
+
+const serverless = require('serverless-http');
+const express = require('express');
+
+const app = express();
+
+app.use(/* register your middleware as normal */);
+
+const handler = serverless(app, { provider: 'aws' });
+module.exports.handler = async (event, context, callback) => {
+    console.log(event);
+    const res = await handler(event, context);
+    
+    callback(null, res);
+}
+
+```
+
 ### Other examples
 [json-server-less-λ](https://github.com/pharindoko/json-server-less-lambda) - using serverless-http with json-server and serverless framework in AWS
 
