@@ -81,6 +81,7 @@
     "pino": "^8.15.0",
     "pino-http": "^8.5.0",
     "polka": "^0.5.2",
+    "proxy-addr": "^2.0.7",
     "reflect-metadata": "^0.1.13",
     "restana": "^4.0.7",
     "sails": "^1.2.3",

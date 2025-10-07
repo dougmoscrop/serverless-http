@@ -178,6 +178,79 @@ describe('express', () => {
     });
   });
 
+  it('ip should come from identity source ip for aws', () => {
+    app.use(morgan('short'));
+    app.use((req, res) => {
+      res.status(200).send(req.ip);
+    });
+
+    return request(app, {
+      httpMethod: 'GET',
+      requestContext: {
+        identity: {
+          sourceIp: '127.0.0.1'
+        }
+      }
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(200);
+      expect(response.body).to.equal('127.0.0.1');
+    });
+  });
+
+  it('ip should come from x-forwarded-for header if present', () => {
+    app.use(morgan('short'));
+    app.use((req, res) => {
+      res.status(200).send(req.ip);
+    });
+
+    return request(app, {
+      httpMethod: 'GET',
+      headers: {
+        'x-forwarded-for': '1.3.3.7'
+      },
+      requestContext: {
+        identity: {
+          sourceIp: '127.0.0.1'
+        }
+      }
+    },
+    {
+        proxyTrust: () => true
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(200);
+      expect(response.body).to.equal('1.3.3.7');
+    });
+  });
+
+
+  it('ip should come from x-forwarded-for header if present 2', () => {
+    app.use(morgan('short'));
+    app.use((req, res) => {
+      res.status(200).send(req.ip);
+    });
+
+    return request(app, {
+      httpMethod: 'GET',
+      headers: {
+        'x-forwarded-for': '192.0.0.1, 1.3.3.7'
+      },
+      requestContext: {
+        identity: {
+          sourceIp: '127.0.0.1'
+        }
+      }
+    },
+    {
+        proxyTrust: () => true
+    })
+    .then(response => {
+      expect(response.statusCode).to.equal(200);
+      expect(response.body).to.equal('192.0.0.1');
+    });
+  });
+
   it('destroy weird', () => {
     app.use((req, res) => {
       // this was causing a .destroy is not a function error

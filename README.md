@@ -24,7 +24,7 @@ Thank you to Upstash for reaching out to sponsor this project!
     <li>Price scales to zero with per request pricing</li>
     <li>Built-in REST API designed for serverless and edge functions</li>
   </ul>
-  
+
 [Start for free in 30 seconds!](https://upstash.com/?utm_source=serverless-http)
 </td>
 </tr>
@@ -52,6 +52,18 @@ Thank you to Upstash for reaching out to sponsor this project!
 * AWS
 * [Genezio](https://genezio.com/deploy-nodejs-express-on-genezio-serverless/)
 * Azure (Experimental, untested, probably outdated)
+
+### Proxy trust
+Serverless-http may use `x-forwarded-for` headers to provide accurate client IP addresses when your application is behind proxies or load balancers.
+
+Proxy trust can be enabled using the `proxyTrust (Function|Array|String)`  option, see [proxy-addr](https://www.npmjs.com/package/proxy-addr) for details:
+
+```javascript
+const handler = serverless(app, {
+  proxyTrust: () => true // Enable full proxy trust
+  proxyTrust: ['loopback', '192.168.0.0/16'] // Enable only specific address
+});
+```
 
 ## Deploy a Hello Word on Genezio
 :rocket: You can deploy your own hello world example using the Express framework to Genezio with one click:
