@@ -167,6 +167,17 @@ describe('format-response', function () {
     expect(formatResponse(v1Event, response, {}).body).to.eql('CombineThisText');
   });
 
+  it("adapts headers on chunked responses on v2Event", () => {
+    const chunkedBody = '7\r\nCombine\r\n4\r\nThis\r\n4\r\nText\r\n0\r\n\r\n';
+    const response = Response.from({
+      body: chunkedBody,
+      headers: { 'transfer-encoding': 'chunked'},
+      statusCode: 200
+    })
+    response.chunkedEncoding = true;
+    expect(formatResponse(v2Event, response, {}).headers['transfer-encoding']).to.be.undefined;
+  });
+
   it("v2Event: return object contains cookies", () => {
     const response = new Response({});
     response.headers['set-cookie'] = ['foo=bar', 'hail=hydra'];
