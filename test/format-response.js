@@ -146,6 +146,16 @@ describe('format-response', function () {
 
   });
 
+  it("handles non-chunked body on res.headers['transfer-encoding'] === 'chunked' on v1Event", () => {
+    const nonChunkedBody = 'AlreadyCombined';
+    const response = Response.from({
+      body: nonChunkedBody,
+      headers: { 'transfer-encoding': 'chunked'},
+      statusCode: 200
+    })
+    expect(formatResponse(v1Event, response, {}).body).to.eql('AlreadyCombined');
+  });
+
   it("parses chunked body on transfer-encoding on v2Event", () => {
     const chunkedBody = '7\r\nCombine\r\n4\r\nThis\r\n4\r\nText\r\n0\r\n\r\n';
     const response = Response.from({
@@ -165,6 +175,16 @@ describe('format-response', function () {
     })
     response.chunkedEncoding = true;
     expect(formatResponse(v2Event, response, {}).body).to.eql('CombineThisText');
+  });
+
+  it("handles non-chunked body on res.headers['transfer-encoding'] === 'chunked' on v2Event", () => {
+    const nonChunkedBody = 'AlreadyCombined';
+    const response = Response.from({
+      body: nonChunkedBody,
+      headers: { 'transfer-encoding': 'chunked'},
+      statusCode: 200
+    })
+    expect(formatResponse(v2Event, response, {}).body).to.eql('AlreadyCombined');
   });
 
   it("adapts headers on chunked responses on v2Event", () => {
