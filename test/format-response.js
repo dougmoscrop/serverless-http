@@ -164,7 +164,7 @@ describe('format-response', function () {
       statusCode: 200
     })
     response.chunkedEncoding = true;
-    expect(formatResponse(v1Event, response, {}).body).to.eql('CombineThisText');
+    expect(formatResponse(v2Event, response, {}).body).to.eql('CombineThisText');
   });
 
   it("adapts headers on chunked responses on v2Event", () => {
