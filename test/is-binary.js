@@ -6,6 +6,18 @@ const sinon = require('sinon');
 
 describe('is-binary', function() {
 
+  it('handles content-encoding', function() {
+    const result = isBinary({ ['content-encoding']: 'gzip' }, {});
+
+    expect(result).to.be.true;
+  });
+
+  it('handles zstd content-encoding', function() {
+    const result = isBinary({ ['content-encoding']: 'zstd' }, {});
+
+    expect(result).to.be.true;
+  });
+
   it('handles charset', function() {
     const result = isBinary({ ['content-type']: 'application/json; charset:utf-8' }, {
       binary: ['application/json']
