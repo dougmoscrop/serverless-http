@@ -171,4 +171,21 @@ describe('generic http listener', () => {
       expect(stub.calledOnce).to.be.true;
     });
   });
+
+  it('should emit finish with writableEnded set, before the handler resolves', () => {
+    const seen = [];
+    app = function (req, res) {
+      res.on('finish', () => seen.push(['finish', res.writableEnded]));
+      res.on('close', () => seen.push(['close', res.writableEnded]));
+      res.writeHead(200);
+      res.end('ok');
+    };
+
+    return request(app, {
+      httpMethod: 'GET',
+      path: '/',
+    }).then(() => {
+      expect(seen).to.deep.equal([['finish', true], ['close', true]]);
+    });
+  });
 });
