@@ -83,6 +83,32 @@ describe('spec', () => {
     expect(called.headers['x-request-id']).to.eql('foo');
   });
 
+  it('should populate rawHeaders', async () => {
+    let called;
+    const handler = serverless((req, res) => {
+      called = req;
+      res.end('');
+    });
+
+    await handler({
+      headers: { 'content-type': 'application/json', accept: 'text/plain' }
+    });
+
+    expect(!!called).to.be.true;
+    expect(called.rawHeaders).to.be.an('array');
+    // Flat [name, value, name, value] list, the same shape Node uses.
+    expect(called.rawHeaders.length % 2).to.equal(0);
+
+    const pairs = new Map();
+    for (let i = 0; i < called.rawHeaders.length; i += 2) {
+      pairs.set(called.rawHeaders[i], called.rawHeaders[i + 1]);
+    }
+    expect(pairs.get('content-type')).to.equal('application/json');
+    expect(pairs.get('accept')).to.equal('text/plain');
+    // Whatever ends up in headers has to be reflected in rawHeaders.
+    expect(pairs.size).to.equal(Object.keys(called.headers).length);
+  });
+
   it('should set custom requestId', async () => {
     let called;
     const handler = serverless((req, res) => {
